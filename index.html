@@ -135,6 +135,86 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-从图片流生成直播视频流" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2018/11/21/从图片流生成直播视频流/">从图片流生成直播视频流</a>
+    </h1>
+  
+
+        
+        <a href="/2018/11/21/从图片流生成直播视频流/" class="archive-article-date">
+  	<time datetime="2018-11-20T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-11-21</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>很多时候我们获取到了一些实时的二进制图片流（如摄像头），并希望可以在浏览器中实时查看，类似直播那样。</p>
+<h2 id="准备"><a href="#准备" class="headerlink" title="准备"></a>准备</h2><p>我们需要javacv，它封装了opencv，ffpmeg等一系列工具</p>
+<p>build.gradle</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">dependencies &#123;</span><br><span class="line">    compile <span class="string">group:</span> <span class="string">'org.bytedeco'</span>, <span class="string">name:</span> <span class="string">'javacv-platform'</span>, <span class="string">version:</span> <span class="string">'1.4.3'</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>思路是这样的，我们用javacv把二进制图片流转换成rmtp视频直播流，推送到媒体服务器，然后用客户端从媒体服务器获取直播流。</p>
+<p>这里我使用的是livego，因为它使用起来比较简单，上行支持rmtp，下行支持rmtp/flv/hls。</p>
+<p>rmtp格式可以使用<code>VLC media player</code>播放器进行播放</p>
+<p>flv格式可以配合<code>flv.js</code>在浏览器中进行播放或使用<code>VLC media player</code>播放器进行播放</p>
+<p>hls格式可以使用<code>VLC media player</code>播放器进行播放</p>
+        
+          <a class="article-more-a" href="/2018/11/21/从图片流生成直播视频流/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/opencv//" class="article-tag-list-link color2">opencv</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-Java处理Webp图片格式转换" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -750,67 +830,6 @@
         <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>本教程提供一种KMS激活方案，即在本地搭建临时性KMS服务器，通过相应命令进行激活。本教程使用Office Visio 2016为例子，Windows 10和其他Office 2016组件激活同理。<br>
         
           <a class="article-more-a" href="/2018/04/05/KMS服务器搭建并激活Office/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-使用Spring注解和全局异常捕获对简单参数校验的代码简化" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2017/08/06/使用Spring注解和全局异常捕获对简单参数校验的代码简化/">使用Spring注解和全局异常捕获对简单参数校验的代码优化</a>
-    </h1>
-  
-
-        
-        <a href="/2017/08/06/使用Spring注解和全局异常捕获对简单参数校验的代码简化/" class="archive-article-date">
-  	<time datetime="2017-08-05T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-08-06</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>在对前端传来的参数进行校验是后端程序开发中不可或缺的步骤，但是大量参数校验的代码混杂在业务逻辑代码中实在是令人无奈何，无形之中使得简单的代码逻辑趋于复制。本文就以int类型为例，使用Spring注解和全局异常捕获对简单参数校验的代码简化技巧进行介绍。<br>
-        
-          <a class="article-more-a" href="/2017/08/06/使用Spring注解和全局异常捕获对简单参数校验的代码简化/#more">more >></a>
         
       
 
