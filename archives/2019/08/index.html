@@ -6,19 +6,18 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="nintha.github.io">
-  <title>03-保存数据到数据库 | Broken Pipe | ninthakeey&#39;s blog</title>
+  <title>Archives: 2019/8 | Broken Pipe | ninthakeey&#39;s blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="很多情况下，为了方便使用，我们习惯把数据存储在数据库中，本章将在前一章的基础上，加入保存数据到MongoDB的逻辑。 在开始前需要确保已经成功安装了MongoDB（localhost:27017）和完成前面的章节内容 Coding为了方便Nodejs调用MongoDB，我们使用mongojs这个第三方包，它可以让我们使用近似原生的MongoDB语法来处理数据，详细语法可以查看相关文档。 安装mon">
-<meta property="og:type" content="article">
-<meta property="og:title" content="03-保存数据到数据库">
-<meta property="og:url" content="nintha.github.io/2018/07/08/Node爬虫指北/03-保存数据到数据库/index.html">
+  <meta name="description" content="ninthakeey&apos;s blog">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Broken Pipe | ninthakeey&#39;s blog">
+<meta property="og:url" content="nintha.github.io/archives/2019/08/index.html">
 <meta property="og:site_name" content="Broken Pipe | ninthakeey&#39;s blog">
-<meta property="og:description" content="很多情况下，为了方便使用，我们习惯把数据存储在数据库中，本章将在前一章的基础上，加入保存数据到MongoDB的逻辑。 在开始前需要确保已经成功安装了MongoDB（localhost:27017）和完成前面的章节内容 Coding为了方便Nodejs调用MongoDB，我们使用mongojs这个第三方包，它可以让我们使用近似原生的MongoDB语法来处理数据，详细语法可以查看相关文档。 安装mon">
+<meta property="og:description" content="ninthakeey&apos;s blog">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2018-09-02T12:48:20.155Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="03-保存数据到数据库">
-<meta name="twitter:description" content="很多情况下，为了方便使用，我们习惯把数据存储在数据库中，本章将在前一章的基础上，加入保存数据到MongoDB的逻辑。 在开始前需要确保已经成功安装了MongoDB（localhost:27017）和完成前面的章节内容 Coding为了方便Nodejs调用MongoDB，我们使用mongojs这个第三方包，它可以让我们使用近似原生的MongoDB语法来处理数据，详细语法可以查看相关文档。 安装mon">
+<meta name="twitter:title" content="Broken Pipe | ninthakeey&#39;s blog">
+<meta name="twitter:description" content="ninthakeey&apos;s blog">
   
   
     <link rel="icon" href="/favicon.png">
@@ -134,114 +133,49 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            <article id="post-Node爬虫指北/03-保存数据到数据库" class="article article-type-post " itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
+            
   
-    <h1 class="article-title" itemprop="name">
-      03-保存数据到数据库
+  
+    
+    
+      
+      
+      <section class="archives-wrap">
+        <div class="archive-year-wrap">
+          <a href="/archives/2019" class="archive-year">2019</a>
+        </div>
+        <div class="archives">
+    
+    <article class="archive-article archive-type-post">
+  <div class="archive-article-inner">
+    <header class="archive-article-header">
+      	<div class="article-meta">
+	      	<a href="/2019/08/29/veladder/基于VertxWeb的SrpingMVC风格注解实现/" class="archive-article-date">
+  	<time datetime="2019-08-28T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-08-29</time>
+</a>
+        </div>
+    	 
+  
+    <h1 itemprop="name">
+      <a class="archive-article-title" href="/2019/08/29/veladder/基于VertxWeb的SrpingMVC风格注解实现/">基于VertxWeb的SrpingMVC风格注解实现</a>
     </h1>
   
 
-        
-        <a href="/2018/07/08/Node爬虫指北/03-保存数据到数据库/" class="archive-article-date">
-  	<time datetime="2018-07-07T16:00:02.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-07-08</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>很多情况下，为了方便使用，我们习惯把数据存储在数据库中，本章将在前一章的基础上，加入保存数据到MongoDB的逻辑。</p>
-<p>在开始前需要确保已经成功安装了MongoDB（localhost:27017）和完成前面的章节内容</p>
-<h2 id="Coding"><a href="#Coding" class="headerlink" title="Coding"></a>Coding</h2><p>为了方便Nodejs调用MongoDB，我们使用<code>mongojs</code>这个第三方包，它可以让我们使用近似原生的MongoDB语法来处理数据，详细语法可以查看<a href="https://www.npmjs.com/package/mongojs" target="_blank" rel="noopener">相关文档</a>。</p>
-<p>安装<code>mongojs</code>：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm i mongojs --save</span><br></pre></td></tr></table></figure>
-<p>我们再新建一个名为<code>dao.js</code>的文件，里面将存放关于和MongoDB相关的逻辑，并键入以下代码:</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> mongojs = <span class="built_in">require</span>(<span class="string">'mongojs'</span>) <span class="comment">// 引入mongojs包</span></span><br><span class="line"><span class="comment">// 连接本地mongodb，关联名为'simple_spider'的库中名为'test'的集合(表)</span></span><br><span class="line"><span class="keyword">const</span> localdb = mongojs(<span class="string">'simple_spider'</span>, [<span class="string">'test'</span>])</span><br><span class="line"></span><br><span class="line"><span class="comment">//保存数据</span></span><br><span class="line"><span class="keyword">const</span> saveData = <span class="function">(<span class="params">data,cb</span>) =&gt;</span> &#123;</span><br><span class="line">	localdb.test.save(data, (err, res)=&gt;&#123;</span><br><span class="line">	 	cb &amp;&amp; cb(err, res)</span><br><span class="line">	&#125;)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 打印所有数据</span></span><br><span class="line"><span class="keyword">const</span> printAllData = <span class="function">(<span class="params">cb</span>) =&gt;</span> &#123;</span><br><span class="line">	localdb.test.find(&#123;&#125;,(err, docs)=&gt;&#123;</span><br><span class="line">		<span class="built_in">console</span>.log(docs)</span><br><span class="line">		cb &amp;&amp; cb(err, docs)</span><br><span class="line">	&#125;)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 关闭mongodb连接，在程序结束时调用，可以防止内存泄漏</span></span><br><span class="line"><span class="keyword">const</span> closeMongo = <span class="function"><span class="params">()</span> =&gt;</span> localdb.close()</span><br><span class="line"></span><br><span class="line"><span class="comment">// 将方法暴露出去</span></span><br><span class="line"><span class="built_in">module</span>.exports = &#123;</span><br><span class="line">	saveData,printAllData,closeMongo</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p><code>dao.js</code>提供了三个方法供<code>index.js</code>进行调用，同时我们需要修改<code>index.js</code>的代码：</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> superagent = <span class="built_in">require</span>(<span class="string">'superagent'</span>)</span><br><span class="line"><span class="keyword">const</span> fs = <span class="built_in">require</span>(<span class="string">'fs'</span>)</span><br><span class="line"><span class="keyword">const</span> dao = <span class="built_in">require</span>(<span class="string">'./dao'</span>) </span><br><span class="line"></span><br><span class="line">superagent</span><br><span class="line">	.get(<span class="string">'https://api.bilibili.com/x/web-interface/archive/stat'</span>)</span><br><span class="line">	.query(&#123; <span class="attr">aid</span>:<span class="number">26186448</span> &#125;)</span><br><span class="line">	.then(<span class="function"><span class="params">res</span> =&gt;</span> &#123;</span><br><span class="line">		<span class="keyword">const</span> data = res.body.data <span class="comment">// 取出需要保存的数据</span></span><br><span class="line">		dao.saveData(data, (err,res)=&gt;&#123;</span><br><span class="line">			<span class="built_in">console</span>.log(<span class="string">'saved data'</span>)</span><br><span class="line">			<span class="comment">//打印数据库里保存的数据，然后关闭数据库连接</span></span><br><span class="line">			dao.printAllData( <span class="function"><span class="params">()</span> =&gt;</span> dao.closeMongo() ) </span><br><span class="line">		&#125;)</span><br><span class="line">	&#125;)</span><br><span class="line">	.catch(<span class="function"><span class="params">err</span> =&gt;</span> <span class="built_in">console</span>.error(err))</span><br></pre></td></tr></table></figure>
-<p>运行代码，顺利的话可以看到这样的输出：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span> node index</span><br><span class="line">saved data</span><br><span class="line">[ &#123; _id: 5b41d634f3df89032c834d5b,</span><br><span class="line">    aid: 26186448,</span><br><span class="line">    view: 619751,</span><br><span class="line">    danmaku: 12053,</span><br><span class="line">    reply: 3500,</span><br><span class="line">    favorite: 14961,</span><br><span class="line">    coin: 40699,</span><br><span class="line">    share: 1676,</span><br><span class="line">    like: 20751,</span><br><span class="line">    now_rank: 0,</span><br><span class="line">    his_rank: 1,</span><br><span class="line">    no_reprint: 1,</span><br><span class="line">    copyright: 1 &#125; ]</span><br></pre></td></tr></table></figure>
+        <div class="article-info info-on-right">
+          
+          
 
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/Node爬虫指北//" class="article-tag-list-link color4">Node爬虫指北</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
+        </div>
+        <div class="clearfix"></div>
+    </header>
   </div>
 </article>
-
-  
-<nav id="article-nav">
-  
-    <a href="/2018/07/08/Node爬虫指北/04-应对网站的限制/" id="article-nav-newer" class="article-nav-link-wrap">
-      <i class="icon-circle-left"></i>
-      <div class="article-nav-title">
-        
-          04-应对网站的限制
-        
-      </div>
-    </a>
   
   
-    <a href="/2018/07/08/Node爬虫指北/02-实现一个简单的爬虫/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">02-实现一个简单的爬虫</div>
-      <i class="icon-circle-right"></i>
-    </a>
-  
-</nav>
-
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-  
-  
+    </div></section>
   
 
-  
-
-  
-
-  
+    
 
 
           </div>
@@ -264,8 +198,8 @@
 	var yiliaConfig = {
 		mathjax: false,
 		isHome: false,
-		isPost: true,
-		isArchive: false,
+		isPost: false,
+		isArchive: true,
 		isTag: false,
 		isCategory: false,
 		open_in_new: false,

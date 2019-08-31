@@ -135,6 +135,70 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-veladder/基于VertxWeb的SrpingMVC风格注解实现" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/08/29/veladder/基于VertxWeb的SrpingMVC风格注解实现/">基于VertxWeb的SrpingMVC风格注解实现</a>
+    </h1>
+  
+
+        
+        <a href="/2019/08/29/veladder/基于VertxWeb的SrpingMVC风格注解实现/" class="archive-article-date">
+  	<time datetime="2019-08-28T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-08-29</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>最近了解到了vertx这个异步框架，但平时用的比较多的还是spring，出于好奇，尝试基于vertx web去实现spring mvc风格注解。</p>
+<p>最终效果如下所示</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Slf</span>4j</span><br><span class="line"><span class="meta">@RestController</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HelloController</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@RequestMapping</span>(<span class="string">"hello/world"</span>)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">helloWorld</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">"Hello world and nintha veladder"</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@RequestMapping</span>(<span class="string">"echo"</span>)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> Map&lt;String, Object&gt; <span class="title">echo</span><span class="params">(String message, Long token, <span class="keyword">int</span> code, RoutingContext ctx)</span> </span>&#123;</span><br><span class="line">        log.info(<span class="string">"uri=&#123;&#125;"</span>, ctx.request().absoluteURI());</span><br><span class="line"></span><br><span class="line">        log.info(<span class="string">"message=&#123;&#125;, token=&#123;&#125;, code=&#123;&#125;"</span>, message, token, code);</span><br><span class="line">        HashMap&lt;String, Object&gt; map = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">        map.put(<span class="string">"message"</span>, message);</span><br><span class="line">        map.put(<span class="string">"token"</span>, token);</span><br><span class="line">        map.put(<span class="string">"code"</span>, code);</span><br><span class="line">        <span class="keyword">return</span> map;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@RequestMapping</span>(value = <span class="string">"hello/array"</span>)</span><br><span class="line">    <span class="keyword">public</span> List&lt;Map.Entry&lt;String, String&gt;&gt; helloArray(<span class="keyword">long</span>[] ids, String[] names, RoutingContext ctx) &#123;</span><br><span class="line">        log.info(<span class="string">"ids=&#123;&#125;"</span>, Arrays.toString(ids));</span><br><span class="line">        log.info(<span class="string">"names=&#123;&#125;"</span>, Arrays.toString(names));</span><br><span class="line">        <span class="keyword">return</span> ctx.request().params().entries();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@RequestMapping</span>(<span class="string">"query/list"</span>)</span><br><span class="line">    <span class="keyword">public</span> List&lt;Map.Entry&lt;String, String&gt;&gt; queryArray(List&lt;Long&gt; ids, TreeSet&lt;String&gt; names, LinkedList rawList, RoutingContext ctx) &#123;</span><br><span class="line">        log.info(<span class="string">"ids=&#123;&#125;"</span>, ids);</span><br><span class="line">        log.info(<span class="string">"names=&#123;&#125;"</span>, names);</span><br><span class="line">        log.info(<span class="string">"rawList=&#123;&#125;"</span>, rawList);</span><br><span class="line">        <span class="keyword">return</span> ctx.request().params().entries();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@RequestMapping</span>(<span class="string">"query/bean"</span>)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> BeanReq <span class="title">queryBean</span><span class="params">(BeanReq req)</span> </span>&#123;</span><br><span class="line">        log.info(<span class="string">"req=&#123;&#125;"</span>, req);</span><br><span class="line">        <span class="keyword">return</span> req;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@RequestMapping</span>(value = <span class="string">"post/body"</span>, method = HttpMethod.POST)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> BeanReq <span class="title">postRequestBody</span><span class="params">(@RequestBody BeanReq req)</span> </span>&#123;</span><br><span class="line">        log.info(<span class="string">"req=&#123;&#125;"</span>, req);</span><br><span class="line">        <span class="keyword">return</span> req;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>完整实现见<a href="https://github.com/nintha/veladder" target="_blank" rel="noopener">github repo: veladder</a></p>
+        
+          <a class="article-more-a" href="/2019/08/29/veladder/基于VertxWeb的SrpingMVC风格注解实现/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-从图片流生成直播视频流" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -807,67 +871,6 @@
 
 
   
-    <article id="post-KMS服务器搭建并激活Office" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/04/05/KMS服务器搭建并激活Office/">KMS服务器搭建并激活Office</a>
-    </h1>
-  
-
-        
-        <a href="/2018/04/05/KMS服务器搭建并激活Office/" class="archive-article-date">
-  	<time datetime="2018-04-04T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-04-05</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>本教程提供一种KMS激活方案，即在本地搭建临时性KMS服务器，通过相应命令进行激活。本教程使用Office Visio 2016为例子，Windows 10和其他Office 2016组件激活同理。<br>
-        
-          <a class="article-more-a" href="/2018/04/05/KMS服务器搭建并激活Office/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
-
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
   
     <nav id="page-nav">
       <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/">Next &raquo;</a>
@@ -882,7 +885,7 @@
   <div class="outer">
     <div id="footer-info">
     	<div class="footer-left">
-    		&copy; 2018 ninthakeey
+    		&copy; 2019 ninthakeey
     	</div>
       	<div class="footer-right">
       		<a href="http://hexo.io/" target="_blank">Hexo</a>  Theme <a href="https://github.com/litten/hexo-theme-yilia" target="_blank">Yilia</a> by Litten
