@@ -6,18 +6,18 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="nintha.github.io">
-  <title>基于VertxWeb的SrpingMVC风格注解实现 | Broken Pipe | ninthakeey&#39;s blog</title>
+  <title>基于VertxWeb的SrpingMVC风格注解实现(一) | Broken Pipe | ninthakeey&#39;s blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="description" content="前言最近了解到了vertx这个异步框架，但平时用的比较多的还是spring，出于好奇，尝试基于vertx web去实现spring mvc风格注解。 最终效果如下所示 123456789101112131415161718192021222324252627282930313233343536373839404142434445464748@Slf4j@RestControllerpublic c">
 <meta property="og:type" content="article">
-<meta property="og:title" content="基于VertxWeb的SrpingMVC风格注解实现">
-<meta property="og:url" content="nintha.github.io/2019/08/29/veladder/基于VertxWeb的SrpingMVC风格注解实现/index.html">
+<meta property="og:title" content="基于VertxWeb的SrpingMVC风格注解实现(一)">
+<meta property="og:url" content="nintha.github.io/2019/08/29/veladder/基于VertxWeb的SrpingMVC风格注解实现1/index.html">
 <meta property="og:site_name" content="Broken Pipe | ninthakeey&#39;s blog">
 <meta property="og:description" content="前言最近了解到了vertx这个异步框架，但平时用的比较多的还是spring，出于好奇，尝试基于vertx web去实现spring mvc风格注解。 最终效果如下所示 123456789101112131415161718192021222324252627282930313233343536373839404142434445464748@Slf4j@RestControllerpublic c">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2019-08-31T10:16:03.704Z">
+<meta property="og:updated_time" content="2019-08-31T10:28:58.430Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="基于VertxWeb的SrpingMVC风格注解实现">
+<meta name="twitter:title" content="基于VertxWeb的SrpingMVC风格注解实现(一)">
 <meta name="twitter:description" content="前言最近了解到了vertx这个异步框架，但平时用的比较多的还是spring，出于好奇，尝试基于vertx web去实现spring mvc风格注解。 最终效果如下所示 123456789101112131415161718192021222324252627282930313233343536373839404142434445464748@Slf4j@RestControllerpublic c">
   
   
@@ -134,19 +134,19 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            <article id="post-veladder/基于VertxWeb的SrpingMVC风格注解实现" class="article article-type-post " itemscope itemprop="blogPost">
+            <article id="post-veladder/基于VertxWeb的SrpingMVC风格注解实现1" class="article article-type-post " itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 class="article-title" itemprop="name">
-      基于VertxWeb的SrpingMVC风格注解实现
+      基于VertxWeb的SrpingMVC风格注解实现(一)
     </h1>
   
 
         
-        <a href="/2019/08/29/veladder/基于VertxWeb的SrpingMVC风格注解实现/" class="archive-article-date">
+        <a href="/2019/08/29/veladder/基于VertxWeb的SrpingMVC风格注解实现1/" class="archive-article-date">
   	<time datetime="2019-08-28T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-08-29</time>
 </a>
         
@@ -228,6 +228,7 @@
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Documented</span></span><br><span class="line"><span class="meta">@Retention</span>(RetentionPolicy.RUNTIME)</span><br><span class="line"><span class="meta">@Target</span>(&#123;ElementType.PARAMETER&#125;)</span><br><span class="line"><span class="keyword">public</span> <span class="meta">@interface</span> RequestBody &#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>这里处理方式比较简单，把整个body以字符串类型读取并进行反序列化</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">List&lt;? extends Class&lt;? extends Annotation&gt;&gt; parameterAnnotation = Arrays</span><br><span class="line">	.stream(parameterAnnotations[i])</span><br><span class="line">    .map(Annotation::annotationType)</span><br><span class="line">    .collect(Collectors.toList());</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> (parameterAnnotation.contains(RequestBody.class)) &#123;</span><br><span class="line">    String bodyAsString = ctx.getBodyAsString();</span><br><span class="line">    argValues[i] = Json.decodeValue(bodyAsString, paramType);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Spring注解挺多的，这次就先实现这个几个吧，剩下的后面再写。</p>
 
       
 
