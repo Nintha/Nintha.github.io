@@ -1,5 +1,5 @@
 ---
-title: 基于VertxWeb的SrpingMVC风格注解实现
+title: 基于VertxWeb的SrpingMVC风格注解实现(一)
 date: 2019-08-29
 ---
 
@@ -435,7 +435,7 @@ if (parameterAnnotation.contains(RequestBody.class)) {
 }
 ```
 
-
+Spring注解挺多的，这次就先实现这个几个吧，剩下的后面再写。
 
 
 
