@@ -15,7 +15,7 @@
 <meta property="og:site_name" content="Broken Pipe | ninthakeey&#39;s blog">
 <meta property="og:description" content="前言最近了解到了vertx这个异步框架，但平时用的比较多的还是spring，出于好奇，尝试基于vertx web去实现spring mvc风格注解。 最终效果如下所示 123456789101112131415161718192021222324252627282930313233343536373839404142434445464748@Slf4j@RestControllerpublic c">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2019-08-31T10:11:20.837Z">
+<meta property="og:updated_time" content="2019-08-31T10:16:03.704Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="基于VertxWeb的SrpingMVC风格注解实现">
 <meta name="twitter:description" content="前言最近了解到了vertx这个异步框架，但平时用的比较多的还是spring，出于好奇，尝试基于vertx web去实现spring mvc风格注解。 最终效果如下所示 123456789101112131415161718192021222324252627282930313233343536373839404142434445464748@Slf4j@RestControllerpublic c">
@@ -205,18 +205,13 @@
 <p><code>javassist</code>可以获取到方法的<code>LocalVariableAttribute</code>，这里面有我们需要的形参信息，包括形参名。</p>
 <p>获取到对应的形参名后，我们可以靠这个获取请求的参数：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 单个值</span></span><br><span class="line">String value = ctx.request().params().get(paramName);</span><br><span class="line"><span class="comment">// 数组或集合</span></span><br><span class="line">List&lt;String&gt; values = ctx.request().params().getAll(paramName);</span><br></pre></td></tr></table></figure>
-<p>接着我们来注入参数值，需要处理的参数类型可以分为下列几种</p>
+<p>接着我们来注入参数值，需要处理的参数类型可以分为下列几种:</p>
 <ol>
-<li><p>简单类型，基础类型和它们的包装类，再加上字符串</p>
-</li>
-<li><p>集合类型，<code>java.util.Collection&lt;T&gt;</code>及其子类，泛型参数T支持简单类型</p>
-</li>
-<li><p>数组类型，数组的组件类型(<code>ComponentType</code>)支持简单类型</p>
-</li>
-<li><p>数据类型，类似POJO的数据载体类，里面可以再嵌套数据类型或其他类型</p>
-</li>
-<li><p>特殊类型，比如FileUpload和RoutingContext，需要特殊处理</p>
-</li>
+<li>简单类型，基础类型和它们的包装类，再加上字符串</li>
+<li>集合类型，<code>java.util.Collection&lt;T&gt;</code>及其子类，泛型参数T支持简单类型</li>
+<li>数组类型，数组的组件类型(<code>ComponentType</code>)支持简单类型</li>
+<li>数据类型，类似POJO的数据载体类，里面可以再嵌套数据类型或其他类型</li>
+<li>特殊类型，比如FileUpload和RoutingContext，需要特殊处理</li>
 </ol>
 <p>简单类型处理只需要把基础类型都转换为包装类型，再反射调用<code>valueOf</code>方法就可以了</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> &lt;T&gt; <span class="function">T <span class="title">parseSimpleType</span><span class="params">(String value, Class&lt;T&gt; targetClass)</span> <span class="keyword">throws</span> Throwable </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (StringUtils.isBlank(value)) <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line"></span><br><span class="line">    Class&lt;?&gt; wrapType = Primitives.wrap(targetClass);</span><br><span class="line">    <span class="keyword">if</span> (Primitives.allWrapperTypes().contains(wrapType)) &#123;</span><br><span class="line">        MethodHandle valueOf = MethodHandles.lookup().unreflect(wrapType.getMethod(<span class="string">"valueOf"</span>, String.class));</span><br><span class="line">        <span class="keyword">return</span> (T) valueOf.invoke(value);</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (targetClass == String.class) &#123;</span><br><span class="line">        <span class="keyword">return</span> (T) value;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
