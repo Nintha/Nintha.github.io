@@ -8,17 +8,17 @@
   <link rel="dns-prefetch" href="nintha.github.io">
   <title>使用Rust、Actix-web和MongoDB构建简单博客网站-01 | Broken Pipe | ninthakeey&#39;s blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="前言本文介绍如何使用Actix-web和MongoDB构建简单博客网站。其中Actix-web 是一个高效的 HTTP Server 框架（Web Framework Benchmarks 上位居榜首），Mongodb是一个流行的数据库软件。 本文完整源码见GITHUB Repo: https://github.com/nintha/demo-myblog 开始我们使用cargo包管理工具来创建项">
+  <meta name="description" content="前言本文介绍如何使用Actix-web和MongoDB构建简单博客网站。其中Actix-web 是一个高效的 HTTP Server 框架（Web Framework Benchmarks 上位居榜首），Mongodb是一个流行的数据库软件。 本文完整源码见GITHUB Repo: https://github.com/nintha/demo-myblog">
 <meta property="og:type" content="article">
 <meta property="og:title" content="使用Rust、Actix-web和MongoDB构建简单博客网站-01">
 <meta property="og:url" content="nintha.github.io/2019/09/28/rust-lang/Blog_Website_With_Rust_Actix-web_And_MongoDB_1/index.html">
 <meta property="og:site_name" content="Broken Pipe | ninthakeey&#39;s blog">
-<meta property="og:description" content="前言本文介绍如何使用Actix-web和MongoDB构建简单博客网站。其中Actix-web 是一个高效的 HTTP Server 框架（Web Framework Benchmarks 上位居榜首），Mongodb是一个流行的数据库软件。 本文完整源码见GITHUB Repo: https://github.com/nintha/demo-myblog 开始我们使用cargo包管理工具来创建项">
+<meta property="og:description" content="前言本文介绍如何使用Actix-web和MongoDB构建简单博客网站。其中Actix-web 是一个高效的 HTTP Server 框架（Web Framework Benchmarks 上位居榜首），Mongodb是一个流行的数据库软件。 本文完整源码见GITHUB Repo: https://github.com/nintha/demo-myblog">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2019-09-28T15:47:14.535Z">
+<meta property="og:updated_time" content="2019-09-28T15:51:23.107Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="使用Rust、Actix-web和MongoDB构建简单博客网站-01">
-<meta name="twitter:description" content="前言本文介绍如何使用Actix-web和MongoDB构建简单博客网站。其中Actix-web 是一个高效的 HTTP Server 框架（Web Framework Benchmarks 上位居榜首），Mongodb是一个流行的数据库软件。 本文完整源码见GITHUB Repo: https://github.com/nintha/demo-myblog 开始我们使用cargo包管理工具来创建项">
+<meta name="twitter:description" content="前言本文介绍如何使用Actix-web和MongoDB构建简单博客网站。其中Actix-web 是一个高效的 HTTP Server 框架（Web Framework Benchmarks 上位居榜首），Mongodb是一个流行的数据库软件。 本文完整源码见GITHUB Repo: https://github.com/nintha/demo-myblog">
   
   
     <link rel="icon" href="/favicon.png">
@@ -155,7 +155,7 @@
     <div class="article-entry" itemprop="articleBody">
       
         <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>本文介绍如何使用Actix-web和MongoDB构建简单博客网站。其中Actix-web 是一个高效的 HTTP Server 框架（<a href="https://www.techempower.com/benchmarks/#section=data-r18" target="_blank" rel="noopener">Web Framework Benchmarks</a> 上位居榜首），Mongodb是一个流行的数据库软件。</p>
-<p>本文完整源码见GITHUB Repo: <a href="https://github.com/nintha/demo-myblog" target="_blank" rel="noopener">https://github.com/nintha/demo-myblog</a></p>
+<p>本文完整源码见GITHUB Repo: <a href="https://github.com/nintha/demo-myblog" target="_blank" rel="noopener">https://github.com/nintha/demo-myblog</a><br><a id="more"></a></p>
 <h2 id="开始"><a href="#开始" class="headerlink" title="开始"></a>开始</h2><p>我们使用<code>cargo</code>包管理工具来创建项目，当前的rust版本为v1.38</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cargo new myblog</span><br></pre></td></tr></table></figure>
 <p>创建成功后 myblog目录结构如下所示</p>
