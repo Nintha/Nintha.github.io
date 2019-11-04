@@ -1,7 +1,8 @@
 ---
 title: 使用Rust、Actix-web和MongoDB构建简单博客网站-01
 date: 2019-09-28
-categories: rust, mongodb, actix
+tags: [rust,actix-web,mongodb]
+categories: rust
 ---
 
 ## 前言
@@ -9,7 +10,7 @@ categories: rust, mongodb, actix
 本文介绍如何使用Actix-web和MongoDB构建简单博客网站。其中Actix-web 是一个高效的 HTTP Server 框架（[Web Framework Benchmarks](<https://www.techempower.com/benchmarks/#section=data-r18>) 上位居榜首），Mongodb是一个流行的数据库软件。
 
 本文完整源码见GITHUB Repo: https://github.com/nintha/demo-myblog
-
+<!--more-->
 ## 开始
 
 我们使用`cargo`包管理工具来创建项目，当前的rust版本为v1.38
