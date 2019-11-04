@@ -227,19 +227,19 @@
 
 
   
-    <article id="post-veladder/基于VertxWeb的SpringMVC风格注解实现1" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-veladder/impl_spring_MVC_style_annotation_base_on_vertx_web_1" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/08/29/veladder/基于VertxWeb的SpringMVC风格注解实现1/">基于VertxWeb的SpringMVC风格注解实现(一)</a>
+      <a class="article-title" href="/2019/08/29/veladder/impl_spring_MVC_style_annotation_base_on_vertx_web_1/">基于VertxWeb的SpringMVC风格注解实现(一)</a>
     </h1>
   
 
         
-        <a href="/2019/08/29/veladder/基于VertxWeb的SpringMVC风格注解实现1/" class="archive-article-date">
+        <a href="/2019/08/29/veladder/impl_spring_MVC_style_annotation_base_on_vertx_web_1/" class="archive-article-date">
   	<time datetime="2019-08-28T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-08-29</time>
 </a>
         
@@ -252,7 +252,7 @@
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Slf</span>4j</span><br><span class="line"><span class="meta">@RestController</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HelloController</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@RequestMapping</span>(<span class="string">"hello/world"</span>)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">helloWorld</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">"Hello world and nintha veladder"</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@RequestMapping</span>(<span class="string">"echo"</span>)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> Map&lt;String, Object&gt; <span class="title">echo</span><span class="params">(String message, Long token, <span class="keyword">int</span> code, RoutingContext ctx)</span> </span>&#123;</span><br><span class="line">        log.info(<span class="string">"uri=&#123;&#125;"</span>, ctx.request().absoluteURI());</span><br><span class="line"></span><br><span class="line">        log.info(<span class="string">"message=&#123;&#125;, token=&#123;&#125;, code=&#123;&#125;"</span>, message, token, code);</span><br><span class="line">        HashMap&lt;String, Object&gt; map = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">        map.put(<span class="string">"message"</span>, message);</span><br><span class="line">        map.put(<span class="string">"token"</span>, token);</span><br><span class="line">        map.put(<span class="string">"code"</span>, code);</span><br><span class="line">        <span class="keyword">return</span> map;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@RequestMapping</span>(value = <span class="string">"hello/array"</span>)</span><br><span class="line">    <span class="keyword">public</span> List&lt;Map.Entry&lt;String, String&gt;&gt; helloArray(<span class="keyword">long</span>[] ids, String[] names, RoutingContext ctx) &#123;</span><br><span class="line">        log.info(<span class="string">"ids=&#123;&#125;"</span>, Arrays.toString(ids));</span><br><span class="line">        log.info(<span class="string">"names=&#123;&#125;"</span>, Arrays.toString(names));</span><br><span class="line">        <span class="keyword">return</span> ctx.request().params().entries();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@RequestMapping</span>(<span class="string">"query/list"</span>)</span><br><span class="line">    <span class="keyword">public</span> List&lt;Map.Entry&lt;String, String&gt;&gt; queryArray(List&lt;Long&gt; ids, TreeSet&lt;String&gt; names, LinkedList rawList, RoutingContext ctx) &#123;</span><br><span class="line">        log.info(<span class="string">"ids=&#123;&#125;"</span>, ids);</span><br><span class="line">        log.info(<span class="string">"names=&#123;&#125;"</span>, names);</span><br><span class="line">        log.info(<span class="string">"rawList=&#123;&#125;"</span>, rawList);</span><br><span class="line">        <span class="keyword">return</span> ctx.request().params().entries();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@RequestMapping</span>(<span class="string">"query/bean"</span>)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> BeanReq <span class="title">queryBean</span><span class="params">(BeanReq req)</span> </span>&#123;</span><br><span class="line">        log.info(<span class="string">"req=&#123;&#125;"</span>, req);</span><br><span class="line">        <span class="keyword">return</span> req;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@RequestMapping</span>(value = <span class="string">"post/body"</span>, method = HttpMethod.POST)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> BeanReq <span class="title">postRequestBody</span><span class="params">(@RequestBody BeanReq req)</span> </span>&#123;</span><br><span class="line">        log.info(<span class="string">"req=&#123;&#125;"</span>, req);</span><br><span class="line">        <span class="keyword">return</span> req;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>完整实现见<a href="https://github.com/nintha/veladder" target="_blank" rel="noopener">github repo: veladder</a></p>
         
-          <a class="article-more-a" href="/2019/08/29/veladder/基于VertxWeb的SpringMVC风格注解实现1/#more">more >></a>
+          <a class="article-more-a" href="/2019/08/29/veladder/impl_spring_MVC_style_annotation_base_on_vertx_web_1/#more">more >></a>
         
       
 
@@ -291,19 +291,19 @@
 
 
   
-    <article id="post-从图片流生成直播视频流" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-generate_video_stream_from_image_stream" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2018/11/21/从图片流生成直播视频流/">从图片流生成直播视频流</a>
+      <a class="article-title" href="/2018/11/21/generate_video_stream_from_image_stream/">从图片流生成直播视频流</a>
     </h1>
   
 
         
-        <a href="/2018/11/21/从图片流生成直播视频流/" class="archive-article-date">
+        <a href="/2018/11/21/generate_video_stream_from_image_stream/" class="archive-article-date">
   	<time datetime="2018-11-20T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-11-21</time>
 </a>
         
@@ -321,7 +321,7 @@
 <p>flv格式可以配合<code>flv.js</code>在浏览器中进行播放或使用<code>VLC media player</code>播放器进行播放</p>
 <p>hls格式可以使用<code>VLC media player</code>播放器进行播放</p>
         
-          <a class="article-more-a" href="/2018/11/21/从图片流生成直播视频流/#more">more >></a>
+          <a class="article-more-a" href="/2018/11/21/generate_video_stream_from_image_stream/#more">more >></a>
         
       
 
@@ -371,19 +371,19 @@
 
 
   
-    <article id="post-Java处理Webp图片格式转换" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-java_handle_webp_images" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2018/09/09/Java处理Webp图片格式转换/">Java处理Webp图片格式转换</a>
+      <a class="article-title" href="/2018/09/09/java_handle_webp_images/">Java处理Webp图片格式转换</a>
     </h1>
   
 
         
-        <a href="/2018/09/09/Java处理Webp图片格式转换/" class="archive-article-date">
+        <a href="/2018/09/09/java_handle_webp_images/" class="archive-article-date">
   	<time datetime="2018-09-08T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-09-09</time>
 </a>
         
@@ -395,7 +395,7 @@
 <p>网上给出的Java环境解决方案往往需要手动在<code>java.library.path</code>中安装对应的动态链接库，windows是dll文件，linux是so文件。这对于开发部署非常不方便。</p>
 <p>本文提供一种无需手动安装动态链接库，同时可以方便处理Webp的解决方案</p>
         
-          <a class="article-more-a" href="/2018/09/09/Java处理Webp图片格式转换/#more">more >></a>
+          <a class="article-more-a" href="/2018/09/09/java_handle_webp_images/#more">more >></a>
         
       
 
@@ -434,19 +434,19 @@
 
 
   
-    <article id="post-Node爬虫指北/05-微小的优化" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-node_spider_compass/05-lite_optimization" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2018/07/10/Node爬虫指北/05-微小的优化/">05-微小的优化</a>
+      <a class="article-title" href="/2018/07/10/node_spider_compass/05-lite_optimization/">05-微小的优化</a>
     </h1>
   
 
         
-        <a href="/2018/07/10/Node爬虫指北/05-微小的优化/" class="archive-article-date">
+        <a href="/2018/07/10/node_spider_compass/05-lite_optimization/" class="archive-article-date">
   	<time datetime="2018-07-09T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-07-10</time>
 </a>
         
@@ -466,7 +466,7 @@
 <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> main = <span class="keyword">async</span> (MAX_ID) =&gt; &#123;</span><br><span class="line">    <span class="keyword">const</span> array = []</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">let</span> i = <span class="number">0</span> ; i &lt; MAX_ID; i++)&#123;</span><br><span class="line">        <span class="comment">// fetch data from website</span></span><br><span class="line">        <span class="keyword">const</span> data = <span class="keyword">await</span> fetchData(i) <span class="comment">//this return a Promise</span></span><br><span class="line">        array.push(data)</span><br><span class="line">    &#125;</span><br><span class="line">    saveToMongoDB(array);</span><br><span class="line">&#125;</span><br><span class="line">main(<span class="number">1000</span>);</span><br></pre></td></tr></table></figure>
 <p>代码使用 <code>async/await</code>进行控制逻辑流，让代码可以同步运行，代码逻辑非常清晰，也很方便debug，缺点是效率偏低，因为如果其中一次循环由于某种原因阻塞了，会影响后面逻辑的执行。</p>
         
-          <a class="article-more-a" href="/2018/07/10/Node爬虫指北/05-微小的优化/#more">more >></a>
+          <a class="article-more-a" href="/2018/07/10/node_spider_compass/05-lite_optimization/#more">more >></a>
         
       
 
@@ -516,19 +516,19 @@
 
 
   
-    <article id="post-Node爬虫指北/04-应对网站的限制" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-node_spider_compass/04-against_website_limitation" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2018/07/08/Node爬虫指北/04-应对网站的限制/">04-应对网站的限制</a>
+      <a class="article-title" href="/2018/07/08/node_spider_compass/04-against_website_limitation/">04-应对网站的限制</a>
     </h1>
   
 
         
-        <a href="/2018/07/08/Node爬虫指北/04-应对网站的限制/" class="archive-article-date">
+        <a href="/2018/07/08/node_spider_compass/04-against_website_limitation/" class="archive-article-date">
   	<time datetime="2018-07-07T16:00:04.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-07-08</time>
 </a>
         
@@ -547,7 +547,7 @@
 <p>其中<code>async</code>关键字放在函数前面声明这时一个异步函数，<code>await</code>关键字会对<code>Promise</code>进行阻塞，从而达到定时执行的效果; <code>sleep</code>是我们自行封装的休眠函数，用<code>Promise</code>对setTimeout进行封装，方便调用。</p>
 <h2 id="UA验证"><a href="#UA验证" class="headerlink" title="UA验证"></a>UA验证</h2><p>UA指的是HTTP请求头部的<code>User-Agent</code>字段，是用来给服务器分辨请求来源浏览器型号用到的。很多服务器会对未知UA的请求进行限制，这个时候我们需要对UA进行伪装。</p>
         
-          <a class="article-more-a" href="/2018/07/08/Node爬虫指北/04-应对网站的限制/#more">more >></a>
+          <a class="article-more-a" href="/2018/07/08/node_spider_compass/04-against_website_limitation/#more">more >></a>
         
       
 
@@ -597,19 +597,19 @@
 
 
   
-    <article id="post-Node爬虫指北/03-保存数据到数据库" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-node_spider_compass/03-save_into_db" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2018/07/08/Node爬虫指北/03-保存数据到数据库/">03-保存数据到数据库</a>
+      <a class="article-title" href="/2018/07/08/node_spider_compass/03-save_into_db/">03-保存数据到数据库</a>
     </h1>
   
 
         
-        <a href="/2018/07/08/Node爬虫指北/03-保存数据到数据库/" class="archive-article-date">
+        <a href="/2018/07/08/node_spider_compass/03-save_into_db/" class="archive-article-date">
   	<time datetime="2018-07-07T16:00:02.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-07-08</time>
 </a>
         
@@ -677,19 +677,19 @@
 
 
   
-    <article id="post-Node爬虫指北/02-实现一个简单的爬虫" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-node_spider_compass/02-impl_a_simple_spider" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2018/07/08/Node爬虫指北/02-实现一个简单的爬虫/">02-实现一个简单的爬虫</a>
+      <a class="article-title" href="/2018/07/08/node_spider_compass/02-impl_a_simple_spider/">02-实现一个简单的爬虫</a>
     </h1>
   
 
         
-        <a href="/2018/07/08/Node爬虫指北/02-实现一个简单的爬虫/" class="archive-article-date">
+        <a href="/2018/07/08/node_spider_compass/02-impl_a_simple_spider/" class="archive-article-date">
   	<time datetime="2018-07-07T16:00:01.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-07-08</time>
 </a>
         
@@ -716,7 +716,7 @@
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span> node index.js</span><br><span class="line">&#123; code: 0,</span><br><span class="line">  message: '0',</span><br><span class="line">  ttl: 1,</span><br><span class="line">  data:</span><br><span class="line">   &#123; aid: 26186448,</span><br><span class="line">     view: 605255,</span><br><span class="line">     danmaku: 11831,</span><br><span class="line">     reply: 3476,</span><br><span class="line">     favorite: 14744,</span><br><span class="line">     coin: 40242,</span><br><span class="line">     share: 1645,</span><br><span class="line">     like: 20596,</span><br><span class="line">     now_rank: 0,</span><br><span class="line">     his_rank: 1,</span><br><span class="line">     no_reprint: 1,</span><br><span class="line">     copyright: 1 &#125; &#125;</span><br></pre></td></tr></table></figure>
 <p>这个Json就是我们所爬到的数据，里面包含了对应视频数据的播放数、弹幕数、回复、收藏等很多统计信息。</p>
         
-          <a class="article-more-a" href="/2018/07/08/Node爬虫指北/02-实现一个简单的爬虫/#more">more >></a>
+          <a class="article-more-a" href="/2018/07/08/node_spider_compass/02-impl_a_simple_spider/#more">more >></a>
         
       
 
@@ -766,19 +766,19 @@
 
 
   
-    <article id="post-Node爬虫指北/01-基础环境搭建" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-node_spider_compass/01-base_env" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2018/07/08/Node爬虫指北/01-基础环境搭建/">01-基础环境搭建</a>
+      <a class="article-title" href="/2018/07/08/node_spider_compass/01-base_env/">01-基础环境搭建</a>
     </h1>
   
 
         
-        <a href="/2018/07/08/Node爬虫指北/01-基础环境搭建/" class="archive-article-date">
+        <a href="/2018/07/08/node_spider_compass/01-base_env/" class="archive-article-date">
   	<time datetime="2018-07-07T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-07-08</time>
 </a>
         
@@ -840,19 +840,19 @@
 
 
   
-    <article id="post-MongoDB/MongoDB基于时间段的聚合查询" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+    <article id="post-MongoDB/MongoDB_aggregation_query_in_time_duration" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2018/05/15/MongoDB/MongoDB基于时间段的聚合查询/">MongoDB基于时间段的聚合查询</a>
+      <a class="article-title" href="/2018/05/15/MongoDB/MongoDB_aggregation_query_in_time_duration/">MongoDB基于时间段的聚合查询</a>
     </h1>
   
 
         
-        <a href="/2018/05/15/MongoDB/MongoDB基于时间段的聚合查询/" class="archive-article-date">
+        <a href="/2018/05/15/MongoDB/MongoDB_aggregation_query_in_time_duration/" class="archive-article-date">
   	<time datetime="2018-05-14T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-05-15</time>
 </a>
         
@@ -863,7 +863,7 @@
         <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>最近写了一个爬虫对B站的视频统计数据进行追踪，每2分钟爬取一次存在mongo里，然后用这些数据画折线图。这个时候问题来了，如果我爬取了一年的数据，进行数据展示的时候，不应该把一年的数据都从数据库里读取出来，对于年这样大粒度统计，应该以每天抽取一条记录就OK了；当想看一天内的数据变化，又要以分钟为粒度进行记录抽取。</p>
 <p>基本的mongo查询语法已经难以解决均匀抽样查询记录了，这时就需要聚合查询这样的工具。</p>
         
-          <a class="article-more-a" href="/2018/05/15/MongoDB/MongoDB基于时间段的聚合查询/#more">more >></a>
+          <a class="article-more-a" href="/2018/05/15/MongoDB/MongoDB_aggregation_query_in_time_duration/#more">more >></a>
         
       
 

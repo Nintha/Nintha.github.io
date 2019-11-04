@@ -6,19 +6,19 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="nintha.github.io">
-  <title>02-实现一个简单的爬虫 | Broken Pipe | ninthakeey&#39;s blog</title>
+  <title>从图片流生成直播视频流 | Broken Pipe | ninthakeey&#39;s blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="先检查一下我们需要准备的东西：  Nodejs &amp;gt;= 8.9 B站视频统计信息API：https://api.bilibili.com/x/web-interface/archive/stat?aid=26186448  如果你已经准备好了，在这一章我们会实现一个非常简单的爬虫。 思路爬虫的简化流程是这样的： 发送一个HTTP请求到目标服务器，服务器返回相应的数据 1234567+-----">
+  <meta name="description" content="前言很多时候我们获取到了一些实时的二进制图片流（如摄像头），并希望可以在浏览器中实时查看，类似直播那样。 准备我们需要javacv，它封装了opencv，ffpmeg等一系列工具 build.gradle 123dependencies &amp;#123;    compile group: &apos;org.bytedeco&apos;, name: &apos;javacv-platform&apos;, version: &apos;1.4.3">
 <meta property="og:type" content="article">
-<meta property="og:title" content="02-实现一个简单的爬虫">
-<meta property="og:url" content="nintha.github.io/2018/07/08/Node爬虫指北/02-实现一个简单的爬虫/index.html">
+<meta property="og:title" content="从图片流生成直播视频流">
+<meta property="og:url" content="nintha.github.io/2018/11/21/generate_video_stream_from_image_stream/index.html">
 <meta property="og:site_name" content="Broken Pipe | ninthakeey&#39;s blog">
-<meta property="og:description" content="先检查一下我们需要准备的东西：  Nodejs &amp;gt;= 8.9 B站视频统计信息API：https://api.bilibili.com/x/web-interface/archive/stat?aid=26186448  如果你已经准备好了，在这一章我们会实现一个非常简单的爬虫。 思路爬虫的简化流程是这样的： 发送一个HTTP请求到目标服务器，服务器返回相应的数据 1234567+-----">
+<meta property="og:description" content="前言很多时候我们获取到了一些实时的二进制图片流（如摄像头），并希望可以在浏览器中实时查看，类似直播那样。 准备我们需要javacv，它封装了opencv，ffpmeg等一系列工具 build.gradle 123dependencies &amp;#123;    compile group: &apos;org.bytedeco&apos;, name: &apos;javacv-platform&apos;, version: &apos;1.4.3">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2018-09-02T12:48:20.155Z">
+<meta property="og:updated_time" content="2018-11-21T13:53:55.728Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="02-实现一个简单的爬虫">
-<meta name="twitter:description" content="先检查一下我们需要准备的东西：  Nodejs &amp;gt;= 8.9 B站视频统计信息API：https://api.bilibili.com/x/web-interface/archive/stat?aid=26186448  如果你已经准备好了，在这一章我们会实现一个非常简单的爬虫。 思路爬虫的简化流程是这样的： 发送一个HTTP请求到目标服务器，服务器返回相应的数据 1234567+-----">
+<meta name="twitter:title" content="从图片流生成直播视频流">
+<meta name="twitter:description" content="前言很多时候我们获取到了一些实时的二进制图片流（如摄像头），并希望可以在浏览器中实时查看，类似直播那样。 准备我们需要javacv，它封装了opencv，ffpmeg等一系列工具 build.gradle 123dependencies &amp;#123;    compile group: &apos;org.bytedeco&apos;, name: &apos;javacv-platform&apos;, version: &apos;1.4.3">
   
   
     <link rel="icon" href="/favicon.png">
@@ -134,50 +134,38 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            <article id="post-Node爬虫指北/02-实现一个简单的爬虫" class="article article-type-post " itemscope itemprop="blogPost">
+            <article id="post-generate_video_stream_from_image_stream" class="article article-type-post " itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 class="article-title" itemprop="name">
-      02-实现一个简单的爬虫
+      从图片流生成直播视频流
     </h1>
   
 
         
-        <a href="/2018/07/08/Node爬虫指北/02-实现一个简单的爬虫/" class="archive-article-date">
-  	<time datetime="2018-07-07T16:00:01.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-07-08</time>
+        <a href="/2018/11/21/generate_video_stream_from_image_stream/" class="archive-article-date">
+  	<time datetime="2018-11-20T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-11-21</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>先检查一下我们需要准备的东西：</p>
-<ul>
-<li>Nodejs &gt;= 8.9</li>
-<li>B站视频统计信息API：<code>https://api.bilibili.com/x/web-interface/archive/stat?aid=26186448</code></li>
-</ul>
-<p>如果你已经准备好了，在这一章我们会实现一个非常简单的爬虫。</p>
-<h2 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h2><p>爬虫的简化流程是这样的：</p>
-<p>发送一个HTTP请求到目标服务器，服务器返回相应的数据</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">+----------+                +-----------+</span><br><span class="line">|          |  HTTP Request  |           |</span><br><span class="line">|          +----------------&gt;           |</span><br><span class="line">|  Nodejs  |                |  Servers  |</span><br><span class="line">|          &lt;----------------+           |</span><br><span class="line">|          |  HTTP Response |           |</span><br><span class="line">+----------+                +-----------+</span><br></pre></td></tr></table></figure>
-<h2 id="Coding"><a href="#Coding" class="headerlink" title="Coding"></a>Coding</h2><p>首先新建一个名为<code>node-simple-spider</code>的文件夹，“发送一个HTTP请求”这个功能需要<code>superagent</code>第三方库来实现，在文件夹<code>node-simple-spider</code>下打开你的终端窗口，键入以下命令来安装<code>superagent</code>的相关依赖：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm i superagent --save</span><br></pre></td></tr></table></figure>
-<p>在文件夹里面创建一个名为<code>index.js</code>的文件，用你最喜欢的编辑器打开它，键入以下内容</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> superagent = <span class="built_in">require</span>(<span class="string">'superagent'</span>) <span class="comment">// 引入superagent包</span></span><br><span class="line">superagent</span><br><span class="line">	.get(<span class="string">'https://api.bilibili.com/x/web-interface/archive/stat'</span>) <span class="comment">// Get请求url</span></span><br><span class="line">	.query(&#123; <span class="attr">aid</span>:<span class="number">26186448</span> &#125;) <span class="comment">// 请求参数，26186448是一个视频的ID</span></span><br><span class="line">	.then(<span class="function"><span class="params">res</span> =&gt;</span> res &amp;&amp; <span class="built_in">console</span>.log(res.body)) <span class="comment">// 请求成功的回调函数</span></span><br><span class="line">	.catch(<span class="function"><span class="params">err</span> =&gt;</span> <span class="built_in">console</span>.error(err)) <span class="comment">// 请求失败的回调函数</span></span><br></pre></td></tr></table></figure>
-<p>然后在刚刚的终端窗口中键入以下命令运行这个程序:</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">node index.js</span><br></pre></td></tr></table></figure>
-<p>成功的话可以在终端看到以下输出</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span> node index.js</span><br><span class="line">&#123; code: 0,</span><br><span class="line">  message: '0',</span><br><span class="line">  ttl: 1,</span><br><span class="line">  data:</span><br><span class="line">   &#123; aid: 26186448,</span><br><span class="line">     view: 605255,</span><br><span class="line">     danmaku: 11831,</span><br><span class="line">     reply: 3476,</span><br><span class="line">     favorite: 14744,</span><br><span class="line">     coin: 40242,</span><br><span class="line">     share: 1645,</span><br><span class="line">     like: 20596,</span><br><span class="line">     now_rank: 0,</span><br><span class="line">     his_rank: 1,</span><br><span class="line">     no_reprint: 1,</span><br><span class="line">     copyright: 1 &#125; &#125;</span><br></pre></td></tr></table></figure>
-<p>这个Json就是我们所爬到的数据，里面包含了对应视频数据的播放数、弹幕数、回复、收藏等很多统计信息。</p>
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>很多时候我们获取到了一些实时的二进制图片流（如摄像头），并希望可以在浏览器中实时查看，类似直播那样。</p>
+<h2 id="准备"><a href="#准备" class="headerlink" title="准备"></a>准备</h2><p>我们需要javacv，它封装了opencv，ffpmeg等一系列工具</p>
+<p>build.gradle</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">dependencies &#123;</span><br><span class="line">    compile <span class="string">group:</span> <span class="string">'org.bytedeco'</span>, <span class="string">name:</span> <span class="string">'javacv-platform'</span>, <span class="string">version:</span> <span class="string">'1.4.3'</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>思路是这样的，我们用javacv把二进制图片流转换成rmtp视频直播流，推送到媒体服务器，然后用客户端从媒体服务器获取直播流。</p>
+<p>这里我使用的是livego，因为它使用起来比较简单，上行支持rmtp，下行支持rmtp/flv/hls。</p>
+<p>rmtp格式可以使用<code>VLC media player</code>播放器进行播放</p>
+<p>flv格式可以配合<code>flv.js</code>在浏览器中进行播放或使用<code>VLC media player</code>播放器进行播放</p>
+<p>hls格式可以使用<code>VLC media player</code>播放器进行播放</p>
 <a id="more"></a>
-<h4 id="输出到文件"><a href="#输出到文件" class="headerlink" title="输出到文件"></a>输出到文件</h4><p>仅仅把爬取的内容打印到控制台显然是不够了，为了可以重复利用这些数据，我们可以把这些数据写入磁盘文件里面；代码如下:</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> superagent = <span class="built_in">require</span>(<span class="string">'superagent'</span>)</span><br><span class="line"><span class="keyword">const</span> fs = <span class="built_in">require</span>(<span class="string">'fs'</span>) <span class="comment">// fs是node自带操作文件包</span></span><br><span class="line">superagent</span><br><span class="line">	.get(<span class="string">'https://api.bilibili.com/x/web-interface/archive/stat'</span>)</span><br><span class="line">	.query(&#123; <span class="attr">aid</span>:<span class="number">26186448</span> &#125;)</span><br><span class="line">	.then(<span class="function"><span class="params">res</span> =&gt;</span> &#123;</span><br><span class="line">		<span class="comment">// 把返回数据写入data.json文件</span></span><br><span class="line">		<span class="keyword">try</span>&#123;</span><br><span class="line">			fs.writeFile(<span class="string">'data.json'</span>, res.text, err =&gt; &#123;</span><br><span class="line">  				<span class="built_in">console</span>.log(<span class="string">'The data was appended to file!'</span>);</span><br><span class="line">			&#125;);</span><br><span class="line">		&#125; <span class="keyword">catch</span>(err) &#123;</span><br><span class="line">			<span class="built_in">console</span>.error(err)</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;)</span><br><span class="line">	.catch(<span class="function"><span class="params">err</span> =&gt;</span> <span class="built_in">console</span>.error(err))</span><br></pre></td></tr></table></figure>
-<p>再次运行代码，就会发现在文件夹里多了个<code>data.json</code>文件，里面是我们爬到的数据。</p>
-<p>注：<code>fs.writeFile</code>每次调用重新生成文件，同名的旧文件会被覆盖；如果希望保留旧文件里的数据可以使用<code>fs.appendFile</code>代替。</p>
-<p><code>superagent</code>更加详细的语法可以参考<a href="https://www.npmjs.com/package/superagent" target="_blank" rel="noopener">这里</a></p>
+<h2 id="Code"><a href="#Code" class="headerlink" title="Code"></a>Code</h2><p>代码用kotlin写的，使用时调用<code>transferRtmp</code>方法</p>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">fun</span> <span class="title">imageBytesToBufferedImage</span><span class="params">(<span class="keyword">data</span>: <span class="type">ByteArray</span>)</span></span>: BufferedImage &#123;</span><br><span class="line">    <span class="keyword">return</span> ImageIO.read(ByteArrayInputStream(<span class="keyword">data</span>))</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">fun</span> <span class="title">bufferedImageToIplImage</span><span class="params">(bufImage: <span class="type">BufferedImage</span>)</span></span>: opencv_core.IplImage &#123;</span><br><span class="line">    <span class="keyword">val</span> iplConverter = OpenCVFrameConverter.ToIplImage()</span><br><span class="line">    <span class="keyword">val</span> java2dConverter = Java2DFrameConverter()</span><br><span class="line">    <span class="keyword">return</span> iplConverter.convert(java2dConverter.convert(bufImage))</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">fun</span> <span class="title">imageBytesToIplImage</span><span class="params">(<span class="keyword">data</span>: <span class="type">ByteArray</span>)</span></span>: opencv_core.IplImage &#123;</span><br><span class="line">    <span class="keyword">return</span> bufferedImageToIplImage(imageBytesToBufferedImage(<span class="keyword">data</span>))</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">  * 参考 https://blog.csdn.net/redfoxtao/article/details/78080924</span></span><br><span class="line"><span class="comment">  * imagesPath: 图片所在文件夹, eg:'./jpgs/'</span></span><br><span class="line"><span class="comment">  * outRtmpUrl：rtmp推流地址，eg:'rtmp://localhost:1935/live/movie'</span></span><br><span class="line"><span class="comment">  */</span></span><br><span class="line"><span class="function"><span class="keyword">fun</span> <span class="title">transferRtmp</span><span class="params">(imagesPath: <span class="type">String</span>, outRtmpUrl: <span class="type">String</span>)</span></span> &#123;</span><br><span class="line">    <span class="keyword">val</span> frameRate = <span class="number">25</span> <span class="comment">//码率</span></span><br><span class="line">    <span class="keyword">val</span> recorder = FrameRecorder.createDefault(outRtmpUrl, <span class="number">600</span>, <span class="number">480</span>)</span><br><span class="line">    recorder.videoCodec = avcodec.AV_CODEC_ID_H264</span><br><span class="line">    recorder.format = <span class="string">"flv"</span></span><br><span class="line">    recorder.frameRate = frameRate.toDouble()</span><br><span class="line">    recorder.gopSize = <span class="number">5</span></span><br><span class="line">    <span class="comment">// set audio</span></span><br><span class="line">    recorder.setAudioOption(<span class="string">"crf"</span>, <span class="string">"0"</span>)</span><br><span class="line">    recorder.audioQuality = <span class="number">0.0</span></span><br><span class="line">    recorder.audioBitrate = <span class="number">192000</span></span><br><span class="line">    recorder.sampleRate = <span class="number">44100</span></span><br><span class="line">    recorder.audioChannels = <span class="number">0</span></span><br><span class="line">    recorder.audioCodec = avcodec.AV_CODEC_ID_AAC</span><br><span class="line"></span><br><span class="line">    println(<span class="string">"start pushing stream to <span class="variable">$outRtmpUrl</span>"</span>)</span><br><span class="line">    recorder.start()</span><br><span class="line"></span><br><span class="line">    <span class="keyword">val</span> converter = OpenCVFrameConverter.ToIplImage()</span><br><span class="line">    <span class="keyword">val</span> fileList = Paths.<span class="keyword">get</span>(imagesPath).toFile().listFiles().sortedBy &#123; it.name &#125;</span><br><span class="line">    <span class="keyword">var</span> startTime: <span class="built_in">Long</span>? = <span class="literal">null</span></span><br><span class="line">    <span class="keyword">val</span> durationTime: <span class="built_in">Long</span> = <span class="number">1000</span>L / frameRate</span><br><span class="line">    <span class="keyword">var</span> loopId: <span class="built_in">Long</span> = <span class="number">0</span>L</span><br><span class="line">    println(<span class="string">"durationTime=<span class="variable">$durationTime</span>"</span>)</span><br><span class="line">    <span class="keyword">while</span> (<span class="literal">true</span>) &#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="comment">// 循环目录中所有的图片</span></span><br><span class="line">            <span class="keyword">for</span> (file <span class="keyword">in</span> fileList) &#123;</span><br><span class="line">                <span class="keyword">val</span> bytes = file.readBytes()</span><br><span class="line">                <span class="keyword">val</span> image = imageBytesToIplImage(bytes)</span><br><span class="line"></span><br><span class="line">                <span class="keyword">val</span> now = System.currentTimeMillis()</span><br><span class="line">                <span class="keyword">if</span> (startTime != <span class="literal">null</span>) &#123;</span><br><span class="line">                    println(<span class="string">"now=<span class="variable">$now</span>, startTime=<span class="variable">$startTime</span>, rst=<span class="subst">$&#123;recorder.timestamp / <span class="number">1000</span>&#125;</span>"</span>)</span><br><span class="line">                    <span class="keyword">val</span> delta = now - startTime - recorder.timestamp / <span class="number">1000</span></span><br><span class="line">                    <span class="keyword">if</span> (durationTime - delta &gt; <span class="number">0</span>) &#123;</span><br><span class="line">                        println(<span class="string">"sleep <span class="subst">$&#123;durationTime - delta&#125;</span> ms"</span>)</span><br><span class="line">                        Thread.sleep(durationTime - delta)</span><br><span class="line">                    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                        println(<span class="string">"[WARN] The frame delta time is <span class="variable">$delta</span>, frameRate is <span class="variable">$frameRate</span>"</span>)</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                startTime = startTime ?: now</span><br><span class="line">                <span class="keyword">val</span> videoTime = <span class="number">1000</span> * (now - startTime)</span><br><span class="line">                println(<span class="string">"videoTime &gt;\t<span class="variable">$videoTime</span> \n\n"</span>)</span><br><span class="line">                <span class="keyword">if</span> (videoTime &gt; recorder.timestamp) recorder.timestamp = videoTime</span><br><span class="line"></span><br><span class="line">                recorder.record(converter.convert(image))</span><br><span class="line">            &#125;</span><br><span class="line">            println(<span class="string">"Loop#<span class="variable">$loopId</span>\t<span class="subst">$&#123;recorder.timestamp&#125;</span>"</span>)</span><br><span class="line">            loopId++</span><br><span class="line">        &#125; <span class="keyword">catch</span> (e: Exception) &#123;</span><br><span class="line">            System.err.println(<span class="string">"ERROR!!!!"</span>)</span><br><span class="line">            e.printStackTrace()</span><br><span class="line">            <span class="keyword">break</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    recorder.stop();</span><br><span class="line">    recorder.release();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
       
 
@@ -192,7 +180,7 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/Node爬虫指北//" class="article-tag-list-link color4">Node爬虫指北</a>
+        			<a href="/categories/opencv//" class="article-tag-list-link color2">opencv</a>
         		</li>
       		
 		</ul>
@@ -210,18 +198,18 @@
   
 <nav id="article-nav">
   
-    <a href="/2018/07/08/Node爬虫指北/03-保存数据到数据库/" id="article-nav-newer" class="article-nav-link-wrap">
+    <a href="/2019/08/29/veladder/impl_spring_MVC_style_annotation_base_on_vertx_web_1/" id="article-nav-newer" class="article-nav-link-wrap">
       <i class="icon-circle-left"></i>
       <div class="article-nav-title">
         
-          03-保存数据到数据库
+          基于VertxWeb的SpringMVC风格注解实现(一)
         
       </div>
     </a>
   
   
-    <a href="/2018/07/08/Node爬虫指北/01-基础环境搭建/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">01-基础环境搭建</div>
+    <a href="/2018/09/09/java_handle_webp_images/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">Java处理Webp图片格式转换</div>
       <i class="icon-circle-right"></i>
     </a>
   

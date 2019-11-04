@@ -6,19 +6,19 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="nintha.github.io">
-  <title>KMS服务器搭建并激活Office | Broken Pipe | ninthakeey&#39;s blog</title>
+  <title>使用Spring注解和全局异常捕获对简单参数校验的代码优化 | Broken Pipe | ninthakeey&#39;s blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="前言本教程提供一种KMS激活方案，即在本地搭建临时性KMS服务器，通过相应命令进行激活。本教程使用Office Visio 2016为例子，Windows 10和其他Office 2016组件激活同理。">
+  <meta name="description" content="前言在对前端传来的参数进行校验是后端程序开发中不可或缺的步骤，但是大量参数校验的代码混杂在业务逻辑代码中实在是令人无奈何，无形之中使得简单的代码逻辑趋于复制。本文就以int类型为例，使用Spring注解和全局异常捕获对简单参数校验的代码简化技巧进行介绍。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="KMS服务器搭建并激活Office">
-<meta property="og:url" content="nintha.github.io/2018/04/05/KMS服务器搭建并激活Office/index.html">
+<meta property="og:title" content="使用Spring注解和全局异常捕获对简单参数校验的代码优化">
+<meta property="og:url" content="nintha.github.io/2017/08/06/spring_annotation_and_global_exception_capture_for_simple_param_checker/index.html">
 <meta property="og:site_name" content="Broken Pipe | ninthakeey&#39;s blog">
-<meta property="og:description" content="前言本教程提供一种KMS激活方案，即在本地搭建临时性KMS服务器，通过相应命令进行激活。本教程使用Office Visio 2016为例子，Windows 10和其他Office 2016组件激活同理。">
+<meta property="og:description" content="前言在对前端传来的参数进行校验是后端程序开发中不可或缺的步骤，但是大量参数校验的代码混杂在业务逻辑代码中实在是令人无奈何，无形之中使得简单的代码逻辑趋于复制。本文就以int类型为例，使用Spring注解和全局异常捕获对简单参数校验的代码简化技巧进行介绍。">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2018-09-02T12:48:20.155Z">
+<meta property="og:updated_time" content="2018-09-02T12:48:20.171Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="KMS服务器搭建并激活Office">
-<meta name="twitter:description" content="前言本教程提供一种KMS激活方案，即在本地搭建临时性KMS服务器，通过相应命令进行激活。本教程使用Office Visio 2016为例子，Windows 10和其他Office 2016组件激活同理。">
+<meta name="twitter:title" content="使用Spring注解和全局异常捕获对简单参数校验的代码优化">
+<meta name="twitter:description" content="前言在对前端传来的参数进行校验是后端程序开发中不可或缺的步骤，但是大量参数校验的代码混杂在业务逻辑代码中实在是令人无奈何，无形之中使得简单的代码逻辑趋于复制。本文就以int类型为例，使用Spring注解和全局异常捕获对简单参数校验的代码简化技巧进行介绍。">
   
   
     <link rel="icon" href="/favicon.png">
@@ -134,37 +134,37 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            <article id="post-KMS服务器搭建并激活Office" class="article article-type-post " itemscope itemprop="blogPost">
+            <article id="post-spring_annotation_and_global_exception_capture_for_simple_param_checker" class="article article-type-post " itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 class="article-title" itemprop="name">
-      KMS服务器搭建并激活Office
+      使用Spring注解和全局异常捕获对简单参数校验的代码优化
     </h1>
   
 
         
-        <a href="/2018/04/05/KMS服务器搭建并激活Office/" class="archive-article-date">
-  	<time datetime="2018-04-04T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-04-05</time>
+        <a href="/2017/08/06/spring_annotation_and_global_exception_capture_for_simple_param_checker/" class="archive-article-date">
+  	<time datetime="2017-08-05T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-08-06</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>本教程提供一种KMS激活方案，即在本地搭建临时性KMS服务器，通过相应命令进行激活。本教程使用Office Visio 2016为例子，Windows 10和其他Office 2016组件激活同理。<br><a id="more"></a></p>
-<h2 id="搭建KMS服务器"><a href="#搭建KMS服务器" class="headerlink" title="搭建KMS服务器"></a>搭建KMS服务器</h2><p>这里我们是使用vlmcsd搭建KMS服务器，首先下载相应压缩包，解压后进入vlmcsd\binaries文件夹里面是各个平台对应的服务端执行文件。</p>
-<p><a href="https://github.com/Nintha/gitTest/blob/master/kms%E6%9C%8D%E5%8A%A1%E5%99%A8-vlmcsd.zip" target="_blank" rel="noopener">下载地址</a></p>
-<p><code>vlmcsd</code>开头的是我们所需要的文件，如win64平台就运行<code>vlmcsd-Windows-x64.exe</code></p>
-<p>运行后,会有一个弹出一个cmd界面，现在KMS服务器已经启动了。KMS服务器默认是使用1688端口，如果你想要把它放在公网上的话，务必开启1688端口的权限。</p>
-<h2 id="激活Visio"><a href="#激活Visio" class="headerlink" title="激活Visio"></a>激活Visio</h2><p>使用[管理员权限]进入cmd或powershell（Win+X, A）</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span> 64位office安装目录</span><br><span class="line">cd "C:\Program Files (x86)\Microsoft Office\Office16"</span><br><span class="line"><span class="meta">#</span> 设置kms地址，本地服务器就用127.0.0.1，端口默认是1688</span><br><span class="line">cscript ospp.vbs /sethst:127.0.0.1</span><br><span class="line"><span class="meta">#</span> 安装visio 专业版密钥，如果要激活其他组件，安装对应密钥即可</span><br><span class="line">cscript ospp.vbs /inpkey:PD3PC-RHNGV-FXJ29-8JK7D-RJRJK</span><br><span class="line"><span class="meta">#</span> 激活</span><br><span class="line">cscript ospp.vbs /act</span><br></pre></td></tr></table></figure>
-<p>然后重启电脑，可以看到Visio 2016已经激活了。</p>
-<h2 id="其他情况的处理"><a href="#其他情况的处理" class="headerlink" title="其他情况的处理"></a>其他情况的处理</h2><p>如果出现激活失败的情况，有可能是你的系统里已经安装了不止一个密钥，导致激活失败。这个时候就需要把失败的密钥卸载，重新安装本KMS支持的密钥。<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span> 查看已经安装的密钥（如果安装多个密钥，激活会失败，需要进行卸载）</span><br><span class="line">cscript ospp.vbs /dstatus</span><br><span class="line"><span class="meta">#</span> 卸载密钥，XXXXX是密钥后5位，上条命令中可以获取</span><br><span class="line">cscript ospp.vbs /unpkey:XXXXX</span><br><span class="line"><span class="meta">#</span> 查看帮助</span><br><span class="line">cscript ospp.vbs /?</span><br></pre></td></tr></table></figure></p>
-<h2 id="附录"><a href="#附录" class="headerlink" title="附录"></a>附录</h2><p>Windows10和Office2016官方KMS Client key:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">Office Professional Plus 2016 - XQNVK-8JYDB-WJ9W3-YJ8YR-WFG99</span><br><span class="line">Office Standard 2016 - JNRGM-WHDWX-FJJG3-K47QV-DRTFM</span><br><span class="line">Project Professional 2016 - YG9NW-3K39V-2T3HJ-93F3Q-G83KT</span><br><span class="line">Project Standard 2016 - GNFHQ-F6YQM-KQDGJ-327XX-KQBVC</span><br><span class="line">Visio Professional 2016 - PD3PC-RHNGV-FXJ29-8JK7D-RJRJK</span><br><span class="line">Visio Standard 2016 - 7WHWN-4T7MP-G96JF-G33KR-W8GF4</span><br><span class="line">Access 2016 - GNH9Y-D2J4T-FJHGG-QRVH7-QPFDW</span><br><span class="line">Excel 2016 - 9C2PK-NWTVB-JMPW8-BFT28-7FTBF</span><br><span class="line">OneNote 2016 - DR92N-9HTF2-97XKM-XW2WJ-XW3J6</span><br><span class="line">Outlook 2016 - R69KK-NTPKF-7M3Q4-QYBHW-6MT9B</span><br><span class="line">PowerPoint 2016 - J7MQP-HNJ4Y-WJ7YM-PFYGF-BY6C6</span><br><span class="line">Publisher 2016 - F47MM-N3XJP-TQXJ9-BP99D-8K837</span><br><span class="line">Skype for Business 2016 - 869NQ-FJ69K-466HW-QYCP2-DDBV6</span><br><span class="line">Word 2016 - WXY84-JN2Q9-RBCCQ-3Q3J3-3PFJ6</span><br><span class="line">Windows 10 Home - TX9XD-98N7V-6WMQ6-BX7FG-H8Q99</span><br><span class="line">Windows 10 Home N - 3KHY7-WNT83-DGQKR-F7HPR-844BM</span><br><span class="line">Windows 10 Home Single Language - 7HNRX-D7KGG-3K4RQ-4WPJ4-YTDFH</span><br><span class="line">Windows 10 Home Country Specific - PVMJN-6DFY6-9CCP6-7BKTT-D3WVR</span><br><span class="line">Windows 10 Professional - W269N-WFGWX-YVC9B-4J6C9-T83GX</span><br><span class="line">Windows 10 Professional N - MH37W-N47XK-V7XM9-C7227-GCQG9</span><br><span class="line">Windows 10 Education - NW6C2-QMPVW-D7KKK-3GKT6-VCFB2</span><br><span class="line">Windows 10 Education N - 2WH4N-8QGBV-H22JP-CT43Q-MDWWJ</span><br><span class="line">Windows 10 Enterprise - NPPR9-FWDCX-D2C8J-H872K-2YT43</span><br><span class="line">Windows 10 Enterprise N - DPH2V-TTNVB-4X9Q3-TJR4H-KHJW4</span><br><span class="line">Windows 10 Enterprise 2015 LTSB - WNMTR-4C88C-JK8YV-HQ7T2-76DF9</span><br><span class="line">Windows 10 Enterprise 2015 LTSB N - 2F77B-TNFGY-69QQF-B8YKP-D69TJ</span><br></pre></td></tr></table></figure></p>
-<p>激活windows的命令为：<br><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">slmgr /skms franklv.ddns.net</span><br><span class="line">slmgr /ato</span><br></pre></td></tr></table></figure></p>
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>在对前端传来的参数进行校验是后端程序开发中不可或缺的步骤，但是大量参数校验的代码混杂在业务逻辑代码中实在是令人无奈何，无形之中使得简单的代码逻辑趋于复制。本文就以int类型为例，使用Spring注解和全局异常捕获对简单参数校验的代码简化技巧进行介绍。<br><a id="more"></a></p>
+<h3 id="示例场景"><a href="#示例场景" class="headerlink" title="示例场景"></a>示例场景</h3><p>这里定义了一个最基本的Controller，代码如下：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RestController</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MainController</span> </span>&#123;</span><br><span class="line">	<span class="meta">@RequestMapping</span>(<span class="string">"/test"</span>)</span><br><span class="line">	<span class="function"><span class="keyword">public</span> String <span class="title">test</span><span class="params">(<span class="keyword">int</span> id)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> String.format(<span class="string">"id: %s"</span>, id);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>通常情况下Spring可以自动对参数进行注入，并转换位相应的类型。这里的id参数会被自动转换为int类型。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">url| http://localhost:8080/test?id=1</span><br><span class="line">res| id: 1</span><br></pre></td></tr></table></figure></p>
+<p>但是如果前端以下面这种URL进行请求，代码就会抛出异常<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">url| http://localhost:8080/test?id=</span><br><span class="line">res| Failed to convert value of type &apos;java.lang.String&apos; to required type &apos;int&apos;; nested exception is java.lang.NumberFormatException: For input string: &quot;&quot;</span><br></pre></td></tr></table></figure></p>
+<p>原因是空字符串并不能转换为有效的数字。同理不带id参数的URL也会抛出异常，毕竟null是无法转换成有效的数字的。</p>
+<p>为了解决这个问题，我们可以用Spring的注解来解决，代码如下：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RestController</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MainController</span> </span>&#123;</span><br><span class="line">	<span class="meta">@RequestMapping</span>(<span class="string">"/test"</span>)</span><br><span class="line">	<span class="function"><span class="keyword">public</span> String <span class="title">test</span><span class="params">(@RequestParam(defaultValue = <span class="string">"1000"</span>, name = <span class="string">"id"</span>)</span> <span class="keyword">int</span> id) </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> String.format(<span class="string">"id: %s"</span>, id);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>我们在id参数前面加了@RequestParam(defaultValue = “1000”, name = “id”)这段注解，它的主要作用是在id参数为空字符或null的时候使用自定义的默认值（defaultValue）。效果如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">url| http://localhost:8080/test?id=</span><br><span class="line">res| id: 1000</span><br></pre></td></tr></table></figure></p>
+<p>看起来已经比原来好很多的，但是还是有不足之处，如果是这样的请求：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">url| http://localhost:8080/test?id=abc</span><br><span class="line">res| Failed to convert value of type &apos;java.lang.String&apos; to required type &apos;int&apos;; nested exception is java.lang.NumberFormatException: For input string: &quot;abc&quot;</span><br></pre></td></tr></table></figure></p>
+<p>显然字符串”abc”无法被转换成数字，而且在spring的文档中也没找到可以用参数注解来解决这个问题的。不过，网上有一种通过配置全局捕获异常，从而可以自定义返回信息，实现如下：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@ControllerAdvice</span></span><br><span class="line"><span class="meta">@ResponseBody</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ControllerExceptionHandler</span> </span>&#123;</span><br><span class="line">	<span class="comment">// 添加全局异常处理流程，根据需要设置需要处理的异常，本文以MethodArgumentTypeMismatchException为例</span></span><br><span class="line">	<span class="meta">@ExceptionHandler</span>(&#123; MethodArgumentTypeMismatchException.class &#125;)</span><br><span class="line">	<span class="function"><span class="keyword">public</span> String <span class="title">MethodArgumentNotValidHandler</span><span class="params">(Exception ex, HttpServletRequest req)</span> </span>&#123;</span><br><span class="line">		String errorMsg = ex.getMessage();</span><br><span class="line">		String[] strArray = errorMsg.split(<span class="string">"\""</span>); <span class="comment">// 获取""中的字符</span></span><br><span class="line">		<span class="keyword">if</span> (strArray.length &gt; <span class="number">1</span>) &#123;</span><br><span class="line">		    <span class="comment">// 获取到出错的参数值</span></span><br><span class="line">			String errorValue = strArray[<span class="number">1</span>]; </span><br><span class="line">			<span class="comment">// 获取到出错的参数名称</span></span><br><span class="line">			Optional&lt;String&gt; keyOp = req.getParameterMap()</span><br><span class="line">							.entrySet().stream()</span><br><span class="line">							.filter(e -&gt; e.getValue()[<span class="number">0</span>].equals(errorValue))</span><br><span class="line">							.map(e -&gt; e.getKey())</span><br><span class="line">							.findAny();</span><br><span class="line">			<span class="keyword">if</span> (keyOp.isPresent()) &#123;</span><br><span class="line">				<span class="keyword">return</span> String.format(<span class="string">"参数错误，请检查以下参数：%s=%s"</span>, keyOp.get(), errorValue);</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">return</span> errorMsg;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>测试一下<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">url| http://localhost:8080/test?id=abc</span><br><span class="line">res| 参数错误，请检查以下参数：id=abc</span><br></pre></td></tr></table></figure></p>
+<p>如果对于一些必传参数，注解设置默认值的做法还是略显多余，毕竟这样还是要手动对参数进行校验，不妨去掉@RequestParam注解，在全局异常处理类中添加所需的异常类型，然后问题就解决了。</p>
 
       
 
@@ -186,18 +186,18 @@
   
 <nav id="article-nav">
   
-    <a href="/2018/05/06/MongoDB/Wiredtiger工具恢复MongoDB数据/" id="article-nav-newer" class="article-nav-link-wrap">
+    <a href="/2018/04/05/kms_server_activite_office/" id="article-nav-newer" class="article-nav-link-wrap">
       <i class="icon-circle-left"></i>
       <div class="article-nav-title">
         
-          Wiredtiger工具恢复MongoDB数据
+          KMS服务器搭建并激活Office
         
       </div>
     </a>
   
   
-    <a href="/2017/08/06/使用Spring注解和全局异常捕获对简单参数校验的代码简化/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">使用Spring注解和全局异常捕获对简单参数校验的代码优化</div>
+    <a href="/2017/08/02/get_duration_from_localdate/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">LocalDate求日期间隔</div>
       <i class="icon-circle-right"></i>
     </a>
   

@@ -6,19 +6,19 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="nintha.github.io">
-  <title>使用Spring注解和全局异常捕获对简单参数校验的代码优化 | Broken Pipe | ninthakeey&#39;s blog</title>
+  <title>02-实现一个简单的爬虫 | Broken Pipe | ninthakeey&#39;s blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="前言在对前端传来的参数进行校验是后端程序开发中不可或缺的步骤，但是大量参数校验的代码混杂在业务逻辑代码中实在是令人无奈何，无形之中使得简单的代码逻辑趋于复制。本文就以int类型为例，使用Spring注解和全局异常捕获对简单参数校验的代码简化技巧进行介绍。">
+  <meta name="description" content="先检查一下我们需要准备的东西：  Nodejs &amp;gt;= 8.9 B站视频统计信息API：https://api.bilibili.com/x/web-interface/archive/stat?aid=26186448  如果你已经准备好了，在这一章我们会实现一个非常简单的爬虫。 思路爬虫的简化流程是这样的： 发送一个HTTP请求到目标服务器，服务器返回相应的数据 1234567+-----">
 <meta property="og:type" content="article">
-<meta property="og:title" content="使用Spring注解和全局异常捕获对简单参数校验的代码优化">
-<meta property="og:url" content="nintha.github.io/2017/08/06/使用Spring注解和全局异常捕获对简单参数校验的代码简化/index.html">
+<meta property="og:title" content="02-实现一个简单的爬虫">
+<meta property="og:url" content="nintha.github.io/2018/07/08/node_spider_compass/02-impl_a_simple_spider/index.html">
 <meta property="og:site_name" content="Broken Pipe | ninthakeey&#39;s blog">
-<meta property="og:description" content="前言在对前端传来的参数进行校验是后端程序开发中不可或缺的步骤，但是大量参数校验的代码混杂在业务逻辑代码中实在是令人无奈何，无形之中使得简单的代码逻辑趋于复制。本文就以int类型为例，使用Spring注解和全局异常捕获对简单参数校验的代码简化技巧进行介绍。">
+<meta property="og:description" content="先检查一下我们需要准备的东西：  Nodejs &amp;gt;= 8.9 B站视频统计信息API：https://api.bilibili.com/x/web-interface/archive/stat?aid=26186448  如果你已经准备好了，在这一章我们会实现一个非常简单的爬虫。 思路爬虫的简化流程是这样的： 发送一个HTTP请求到目标服务器，服务器返回相应的数据 1234567+-----">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2018-09-02T12:48:20.171Z">
+<meta property="og:updated_time" content="2018-09-02T12:48:20.155Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="使用Spring注解和全局异常捕获对简单参数校验的代码优化">
-<meta name="twitter:description" content="前言在对前端传来的参数进行校验是后端程序开发中不可或缺的步骤，但是大量参数校验的代码混杂在业务逻辑代码中实在是令人无奈何，无形之中使得简单的代码逻辑趋于复制。本文就以int类型为例，使用Spring注解和全局异常捕获对简单参数校验的代码简化技巧进行介绍。">
+<meta name="twitter:title" content="02-实现一个简单的爬虫">
+<meta name="twitter:description" content="先检查一下我们需要准备的东西：  Nodejs &amp;gt;= 8.9 B站视频统计信息API：https://api.bilibili.com/x/web-interface/archive/stat?aid=26186448  如果你已经准备好了，在这一章我们会实现一个非常简单的爬虫。 思路爬虫的简化流程是这样的： 发送一个HTTP请求到目标服务器，服务器返回相应的数据 1234567+-----">
   
   
     <link rel="icon" href="/favicon.png">
@@ -134,37 +134,50 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            <article id="post-使用Spring注解和全局异常捕获对简单参数校验的代码简化" class="article article-type-post " itemscope itemprop="blogPost">
+            <article id="post-node_spider_compass/02-impl_a_simple_spider" class="article article-type-post " itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 class="article-title" itemprop="name">
-      使用Spring注解和全局异常捕获对简单参数校验的代码优化
+      02-实现一个简单的爬虫
     </h1>
   
 
         
-        <a href="/2017/08/06/使用Spring注解和全局异常捕获对简单参数校验的代码简化/" class="archive-article-date">
-  	<time datetime="2017-08-05T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2017-08-06</time>
+        <a href="/2018/07/08/node_spider_compass/02-impl_a_simple_spider/" class="archive-article-date">
+  	<time datetime="2018-07-07T16:00:01.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-07-08</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>在对前端传来的参数进行校验是后端程序开发中不可或缺的步骤，但是大量参数校验的代码混杂在业务逻辑代码中实在是令人无奈何，无形之中使得简单的代码逻辑趋于复制。本文就以int类型为例，使用Spring注解和全局异常捕获对简单参数校验的代码简化技巧进行介绍。<br><a id="more"></a></p>
-<h3 id="示例场景"><a href="#示例场景" class="headerlink" title="示例场景"></a>示例场景</h3><p>这里定义了一个最基本的Controller，代码如下：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RestController</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MainController</span> </span>&#123;</span><br><span class="line">	<span class="meta">@RequestMapping</span>(<span class="string">"/test"</span>)</span><br><span class="line">	<span class="function"><span class="keyword">public</span> String <span class="title">test</span><span class="params">(<span class="keyword">int</span> id)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> String.format(<span class="string">"id: %s"</span>, id);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>通常情况下Spring可以自动对参数进行注入，并转换位相应的类型。这里的id参数会被自动转换为int类型。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">url| http://localhost:8080/test?id=1</span><br><span class="line">res| id: 1</span><br></pre></td></tr></table></figure></p>
-<p>但是如果前端以下面这种URL进行请求，代码就会抛出异常<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">url| http://localhost:8080/test?id=</span><br><span class="line">res| Failed to convert value of type &apos;java.lang.String&apos; to required type &apos;int&apos;; nested exception is java.lang.NumberFormatException: For input string: &quot;&quot;</span><br></pre></td></tr></table></figure></p>
-<p>原因是空字符串并不能转换为有效的数字。同理不带id参数的URL也会抛出异常，毕竟null是无法转换成有效的数字的。</p>
-<p>为了解决这个问题，我们可以用Spring的注解来解决，代码如下：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RestController</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MainController</span> </span>&#123;</span><br><span class="line">	<span class="meta">@RequestMapping</span>(<span class="string">"/test"</span>)</span><br><span class="line">	<span class="function"><span class="keyword">public</span> String <span class="title">test</span><span class="params">(@RequestParam(defaultValue = <span class="string">"1000"</span>, name = <span class="string">"id"</span>)</span> <span class="keyword">int</span> id) </span>&#123;</span><br><span class="line">		<span class="keyword">return</span> String.format(<span class="string">"id: %s"</span>, id);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>我们在id参数前面加了@RequestParam(defaultValue = “1000”, name = “id”)这段注解，它的主要作用是在id参数为空字符或null的时候使用自定义的默认值（defaultValue）。效果如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">url| http://localhost:8080/test?id=</span><br><span class="line">res| id: 1000</span><br></pre></td></tr></table></figure></p>
-<p>看起来已经比原来好很多的，但是还是有不足之处，如果是这样的请求：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">url| http://localhost:8080/test?id=abc</span><br><span class="line">res| Failed to convert value of type &apos;java.lang.String&apos; to required type &apos;int&apos;; nested exception is java.lang.NumberFormatException: For input string: &quot;abc&quot;</span><br></pre></td></tr></table></figure></p>
-<p>显然字符串”abc”无法被转换成数字，而且在spring的文档中也没找到可以用参数注解来解决这个问题的。不过，网上有一种通过配置全局捕获异常，从而可以自定义返回信息，实现如下：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@ControllerAdvice</span></span><br><span class="line"><span class="meta">@ResponseBody</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ControllerExceptionHandler</span> </span>&#123;</span><br><span class="line">	<span class="comment">// 添加全局异常处理流程，根据需要设置需要处理的异常，本文以MethodArgumentTypeMismatchException为例</span></span><br><span class="line">	<span class="meta">@ExceptionHandler</span>(&#123; MethodArgumentTypeMismatchException.class &#125;)</span><br><span class="line">	<span class="function"><span class="keyword">public</span> String <span class="title">MethodArgumentNotValidHandler</span><span class="params">(Exception ex, HttpServletRequest req)</span> </span>&#123;</span><br><span class="line">		String errorMsg = ex.getMessage();</span><br><span class="line">		String[] strArray = errorMsg.split(<span class="string">"\""</span>); <span class="comment">// 获取""中的字符</span></span><br><span class="line">		<span class="keyword">if</span> (strArray.length &gt; <span class="number">1</span>) &#123;</span><br><span class="line">		    <span class="comment">// 获取到出错的参数值</span></span><br><span class="line">			String errorValue = strArray[<span class="number">1</span>]; </span><br><span class="line">			<span class="comment">// 获取到出错的参数名称</span></span><br><span class="line">			Optional&lt;String&gt; keyOp = req.getParameterMap()</span><br><span class="line">							.entrySet().stream()</span><br><span class="line">							.filter(e -&gt; e.getValue()[<span class="number">0</span>].equals(errorValue))</span><br><span class="line">							.map(e -&gt; e.getKey())</span><br><span class="line">							.findAny();</span><br><span class="line">			<span class="keyword">if</span> (keyOp.isPresent()) &#123;</span><br><span class="line">				<span class="keyword">return</span> String.format(<span class="string">"参数错误，请检查以下参数：%s=%s"</span>, keyOp.get(), errorValue);</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">return</span> errorMsg;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>测试一下<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">url| http://localhost:8080/test?id=abc</span><br><span class="line">res| 参数错误，请检查以下参数：id=abc</span><br></pre></td></tr></table></figure></p>
-<p>如果对于一些必传参数，注解设置默认值的做法还是略显多余，毕竟这样还是要手动对参数进行校验，不妨去掉@RequestParam注解，在全局异常处理类中添加所需的异常类型，然后问题就解决了。</p>
+        <p>先检查一下我们需要准备的东西：</p>
+<ul>
+<li>Nodejs &gt;= 8.9</li>
+<li>B站视频统计信息API：<code>https://api.bilibili.com/x/web-interface/archive/stat?aid=26186448</code></li>
+</ul>
+<p>如果你已经准备好了，在这一章我们会实现一个非常简单的爬虫。</p>
+<h2 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h2><p>爬虫的简化流程是这样的：</p>
+<p>发送一个HTTP请求到目标服务器，服务器返回相应的数据</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">+----------+                +-----------+</span><br><span class="line">|          |  HTTP Request  |           |</span><br><span class="line">|          +----------------&gt;           |</span><br><span class="line">|  Nodejs  |                |  Servers  |</span><br><span class="line">|          &lt;----------------+           |</span><br><span class="line">|          |  HTTP Response |           |</span><br><span class="line">+----------+                +-----------+</span><br></pre></td></tr></table></figure>
+<h2 id="Coding"><a href="#Coding" class="headerlink" title="Coding"></a>Coding</h2><p>首先新建一个名为<code>node-simple-spider</code>的文件夹，“发送一个HTTP请求”这个功能需要<code>superagent</code>第三方库来实现，在文件夹<code>node-simple-spider</code>下打开你的终端窗口，键入以下命令来安装<code>superagent</code>的相关依赖：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm i superagent --save</span><br></pre></td></tr></table></figure>
+<p>在文件夹里面创建一个名为<code>index.js</code>的文件，用你最喜欢的编辑器打开它，键入以下内容</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> superagent = <span class="built_in">require</span>(<span class="string">'superagent'</span>) <span class="comment">// 引入superagent包</span></span><br><span class="line">superagent</span><br><span class="line">	.get(<span class="string">'https://api.bilibili.com/x/web-interface/archive/stat'</span>) <span class="comment">// Get请求url</span></span><br><span class="line">	.query(&#123; <span class="attr">aid</span>:<span class="number">26186448</span> &#125;) <span class="comment">// 请求参数，26186448是一个视频的ID</span></span><br><span class="line">	.then(<span class="function"><span class="params">res</span> =&gt;</span> res &amp;&amp; <span class="built_in">console</span>.log(res.body)) <span class="comment">// 请求成功的回调函数</span></span><br><span class="line">	.catch(<span class="function"><span class="params">err</span> =&gt;</span> <span class="built_in">console</span>.error(err)) <span class="comment">// 请求失败的回调函数</span></span><br></pre></td></tr></table></figure>
+<p>然后在刚刚的终端窗口中键入以下命令运行这个程序:</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">node index.js</span><br></pre></td></tr></table></figure>
+<p>成功的话可以在终端看到以下输出</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span> node index.js</span><br><span class="line">&#123; code: 0,</span><br><span class="line">  message: '0',</span><br><span class="line">  ttl: 1,</span><br><span class="line">  data:</span><br><span class="line">   &#123; aid: 26186448,</span><br><span class="line">     view: 605255,</span><br><span class="line">     danmaku: 11831,</span><br><span class="line">     reply: 3476,</span><br><span class="line">     favorite: 14744,</span><br><span class="line">     coin: 40242,</span><br><span class="line">     share: 1645,</span><br><span class="line">     like: 20596,</span><br><span class="line">     now_rank: 0,</span><br><span class="line">     his_rank: 1,</span><br><span class="line">     no_reprint: 1,</span><br><span class="line">     copyright: 1 &#125; &#125;</span><br></pre></td></tr></table></figure>
+<p>这个Json就是我们所爬到的数据，里面包含了对应视频数据的播放数、弹幕数、回复、收藏等很多统计信息。</p>
+<a id="more"></a>
+<h4 id="输出到文件"><a href="#输出到文件" class="headerlink" title="输出到文件"></a>输出到文件</h4><p>仅仅把爬取的内容打印到控制台显然是不够了，为了可以重复利用这些数据，我们可以把这些数据写入磁盘文件里面；代码如下:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> superagent = <span class="built_in">require</span>(<span class="string">'superagent'</span>)</span><br><span class="line"><span class="keyword">const</span> fs = <span class="built_in">require</span>(<span class="string">'fs'</span>) <span class="comment">// fs是node自带操作文件包</span></span><br><span class="line">superagent</span><br><span class="line">	.get(<span class="string">'https://api.bilibili.com/x/web-interface/archive/stat'</span>)</span><br><span class="line">	.query(&#123; <span class="attr">aid</span>:<span class="number">26186448</span> &#125;)</span><br><span class="line">	.then(<span class="function"><span class="params">res</span> =&gt;</span> &#123;</span><br><span class="line">		<span class="comment">// 把返回数据写入data.json文件</span></span><br><span class="line">		<span class="keyword">try</span>&#123;</span><br><span class="line">			fs.writeFile(<span class="string">'data.json'</span>, res.text, err =&gt; &#123;</span><br><span class="line">  				<span class="built_in">console</span>.log(<span class="string">'The data was appended to file!'</span>);</span><br><span class="line">			&#125;);</span><br><span class="line">		&#125; <span class="keyword">catch</span>(err) &#123;</span><br><span class="line">			<span class="built_in">console</span>.error(err)</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;)</span><br><span class="line">	.catch(<span class="function"><span class="params">err</span> =&gt;</span> <span class="built_in">console</span>.error(err))</span><br></pre></td></tr></table></figure>
+<p>再次运行代码，就会发现在文件夹里多了个<code>data.json</code>文件，里面是我们爬到的数据。</p>
+<p>注：<code>fs.writeFile</code>每次调用重新生成文件，同名的旧文件会被覆盖；如果希望保留旧文件里的数据可以使用<code>fs.appendFile</code>代替。</p>
+<p><code>superagent</code>更加详细的语法可以参考<a href="https://www.npmjs.com/package/superagent" target="_blank" rel="noopener">这里</a></p>
 
       
 
@@ -174,6 +187,17 @@
       
       
       
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/Node爬虫指北//" class="article-tag-list-link color4">Node爬虫指北</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
 
       
 
@@ -186,18 +210,18 @@
   
 <nav id="article-nav">
   
-    <a href="/2018/04/05/KMS服务器搭建并激活Office/" id="article-nav-newer" class="article-nav-link-wrap">
+    <a href="/2018/07/08/node_spider_compass/03-save_into_db/" id="article-nav-newer" class="article-nav-link-wrap">
       <i class="icon-circle-left"></i>
       <div class="article-nav-title">
         
-          KMS服务器搭建并激活Office
+          03-保存数据到数据库
         
       </div>
     </a>
   
   
-    <a href="/2017/08/02/LocalDate求日期间隔/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">LocalDate求日期间隔</div>
+    <a href="/2018/07/08/node_spider_compass/01-base_env/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">01-基础环境搭建</div>
       <i class="icon-circle-right"></i>
     </a>
   

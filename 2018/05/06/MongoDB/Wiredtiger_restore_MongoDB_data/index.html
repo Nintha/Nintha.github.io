@@ -6,19 +6,19 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="nintha.github.io">
-  <title>MongoDB基于时间段的聚合查询 | Broken Pipe | ninthakeey&#39;s blog</title>
+  <title>Wiredtiger工具恢复MongoDB数据 | Broken Pipe | ninthakeey&#39;s blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="前言最近写了一个爬虫对B站的视频统计数据进行追踪，每2分钟爬取一次存在mongo里，然后用这些数据画折线图。这个时候问题来了，如果我爬取了一年的数据，进行数据展示的时候，不应该把一年的数据都从数据库里读取出来，对于年这样大粒度统计，应该以每天抽取一条记录就OK了；当想看一天内的数据变化，又要以分钟为粒度进行记录抽取。 基本的mongo查询语法已经难以解决均匀抽样查询记录了，这时就需要聚合查询这样的">
+  <meta name="description" content="前言前几日在VPS折腾MongoDB，由于机器内存实在是太小了（1G，又跑了别的程序），进行重建索引操作时，内存不足被系统给kill了。强制kill的Mongo无法在repair模式下恢复，只能直接用Wiredtiger工具读取二进制数据文件进行恢复了。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="MongoDB基于时间段的聚合查询">
-<meta property="og:url" content="nintha.github.io/2018/05/15/MongoDB/MongoDB基于时间段的聚合查询/index.html">
+<meta property="og:title" content="Wiredtiger工具恢复MongoDB数据">
+<meta property="og:url" content="nintha.github.io/2018/05/06/MongoDB/Wiredtiger_restore_MongoDB_data/index.html">
 <meta property="og:site_name" content="Broken Pipe | ninthakeey&#39;s blog">
-<meta property="og:description" content="前言最近写了一个爬虫对B站的视频统计数据进行追踪，每2分钟爬取一次存在mongo里，然后用这些数据画折线图。这个时候问题来了，如果我爬取了一年的数据，进行数据展示的时候，不应该把一年的数据都从数据库里读取出来，对于年这样大粒度统计，应该以每天抽取一条记录就OK了；当想看一天内的数据变化，又要以分钟为粒度进行记录抽取。 基本的mongo查询语法已经难以解决均匀抽样查询记录了，这时就需要聚合查询这样的">
+<meta property="og:description" content="前言前几日在VPS折腾MongoDB，由于机器内存实在是太小了（1G，又跑了别的程序），进行重建索引操作时，内存不足被系统给kill了。强制kill的Mongo无法在repair模式下恢复，只能直接用Wiredtiger工具读取二进制数据文件进行恢复了。">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2018-09-02T12:48:20.155Z">
+<meta property="og:updated_time" content="2018-09-02T12:48:20.171Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="MongoDB基于时间段的聚合查询">
-<meta name="twitter:description" content="前言最近写了一个爬虫对B站的视频统计数据进行追踪，每2分钟爬取一次存在mongo里，然后用这些数据画折线图。这个时候问题来了，如果我爬取了一年的数据，进行数据展示的时候，不应该把一年的数据都从数据库里读取出来，对于年这样大粒度统计，应该以每天抽取一条记录就OK了；当想看一天内的数据变化，又要以分钟为粒度进行记录抽取。 基本的mongo查询语法已经难以解决均匀抽样查询记录了，这时就需要聚合查询这样的">
+<meta name="twitter:title" content="Wiredtiger工具恢复MongoDB数据">
+<meta name="twitter:description" content="前言前几日在VPS折腾MongoDB，由于机器内存实在是太小了（1G，又跑了别的程序），进行重建索引操作时，内存不足被系统给kill了。强制kill的Mongo无法在repair模式下恢复，只能直接用Wiredtiger工具读取二进制数据文件进行恢复了。">
   
   
     <link rel="icon" href="/favicon.png">
@@ -134,45 +134,58 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            <article id="post-MongoDB/MongoDB基于时间段的聚合查询" class="article article-type-post " itemscope itemprop="blogPost">
+            <article id="post-MongoDB/Wiredtiger_restore_MongoDB_data" class="article article-type-post " itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 class="article-title" itemprop="name">
-      MongoDB基于时间段的聚合查询
+      Wiredtiger工具恢复MongoDB数据
     </h1>
   
 
         
-        <a href="/2018/05/15/MongoDB/MongoDB基于时间段的聚合查询/" class="archive-article-date">
-  	<time datetime="2018-05-14T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-05-15</time>
+        <a href="/2018/05/06/MongoDB/Wiredtiger_restore_MongoDB_data/" class="archive-article-date">
+  	<time datetime="2018-05-05T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-05-06</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>最近写了一个爬虫对B站的视频统计数据进行追踪，每2分钟爬取一次存在mongo里，然后用这些数据画折线图。这个时候问题来了，如果我爬取了一年的数据，进行数据展示的时候，不应该把一年的数据都从数据库里读取出来，对于年这样大粒度统计，应该以每天抽取一条记录就OK了；当想看一天内的数据变化，又要以分钟为粒度进行记录抽取。</p>
-<p>基本的mongo查询语法已经难以解决均匀抽样查询记录了，这时就需要聚合查询这样的工具。</p>
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>前几日在VPS折腾MongoDB，由于机器内存实在是太小了（1G，又跑了别的程序），进行重建索引操作时，内存不足被系统给kill了。强制kill的Mongo无法在<code>repair</code>模式下恢复，只能直接用Wiredtiger工具读取二进制数据文件进行恢复了。</p>
 <a id="more"></a>
-<h2 id="Mongo聚合查询"><a href="#Mongo聚合查询" class="headerlink" title="Mongo聚合查询"></a>Mongo聚合查询</h2><p>先看下存储的数据结构，其中<code>ctime</code>代表了这条记录的创建时间。</p>
-<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="attr">"_id"</span> : ObjectId(<span class="string">"5ae738594cb3ed1a60210042"</span>),</span><br><span class="line">    <span class="attr">"aid"</span> : NumberLong(<span class="number">22755224</span>),</span><br><span class="line">    <span class="attr">"view"</span> : NumberLong(<span class="number">18649</span>),</span><br><span class="line">    <span class="attr">"danmaku"</span> : NumberLong(<span class="number">533</span>),</span><br><span class="line">    <span class="attr">"favorite"</span> : NumberLong(<span class="number">1027</span>),</span><br><span class="line">    <span class="attr">"reply"</span> : NumberLong(<span class="number">553</span>),</span><br><span class="line">    <span class="attr">"coin"</span> : NumberLong(<span class="number">1896</span>),</span><br><span class="line">    <span class="attr">"share"</span> : NumberLong(<span class="number">172</span>),</span><br><span class="line">    <span class="attr">"ctime"</span> : ISODate(<span class="string">"2018-04-30T15:38:01.120Z"</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>查询的目标是这样的，对于指定的时间区间，返回最多300条（这个数量大概是性能和图表显示效果的平衡吧）。</p>
-<p>思路是这样的：</p>
-<p>​先对把时间区间平均分成300份，对每一个份的小时间区间中按一个统一的规律取一条记录作为小时间区间的代表记录（这个统一的规律可以用最大值、最小值、平均值等，我这里使用了最大值，为了保证可以看到最新的一条追踪记录）。</p>
-<p>时间区间均分这个需求可以用mongo聚合中的<code>$group</code>操作进行处理，不过值得注意的是<code>$group</code>是对某一列中拥有相同值的记录进行分组。那如何把一段时间内的记录归并到同一组呢？一种可行的操作是把时间转换成时间戳，就是长整形数字，把时间区间同样转换为一个数字，两者相除再抹除小数部分就可以了。</p>
-<p>把这个思路用Mongo原生API实现：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">db.trace_video_stat.aggregate([</span><br><span class="line">    &#123;<span class="string">"$match"</span>:&#123;</span><br><span class="line">        <span class="string">"aid"</span>:<span class="number">22755224</span>,</span><br><span class="line">        <span class="string">"ctime"</span>: &#123;</span><br><span class="line">            <span class="string">'$gte'</span>:ISODate(<span class="string">"2018-05-10T00:00:00Z"</span>),</span><br><span class="line">            <span class="string">'$lt'</span>:ISODate(<span class="string">"2018-05-10T00:30:00Z"</span>)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;&#125;,</span><br><span class="line">    &#123;<span class="string">"$group"</span>: &#123;</span><br><span class="line">        <span class="string">"_id"</span>: &#123; </span><br><span class="line">            <span class="string">"$subtract"</span>: [</span><br><span class="line">                &#123; <span class="string">"$subtract"</span>: [ <span class="string">"$ctime"</span>, <span class="keyword">new</span> <span class="built_in">Date</span>(<span class="string">"1970-01-01"</span>) ] &#125;,</span><br><span class="line">                &#123; <span class="string">"$mod"</span>: [</span><br><span class="line">                    &#123; <span class="string">"$subtract"</span>: [ <span class="string">"$ctime"</span>, <span class="keyword">new</span> <span class="built_in">Date</span>(<span class="string">"1970-01-01"</span>) ] &#125;,</span><br><span class="line">                    <span class="number">1000</span> * <span class="number">60</span> * <span class="number">30</span>  <span class="comment">/*聚合时间段，30分钟*/</span></span><br><span class="line">                ]&#125;</span><br><span class="line">            ]</span><br><span class="line">        &#125;,</span><br><span class="line">        <span class="string">"coin"</span>: &#123;<span class="string">'$max'</span>: <span class="string">'$coin'</span>&#125;,</span><br><span class="line">        <span class="string">"view"</span>: &#123;<span class="string">'$max'</span>: <span class="string">'$view'</span>&#125;,</span><br><span class="line">        <span class="string">"danmaku"</span>: &#123;<span class="string">'$max'</span>: <span class="string">'$danmaku'</span>&#125;,</span><br><span class="line">        <span class="string">"favorite"</span>: &#123;<span class="string">'$max'</span>: <span class="string">'$favorite'</span>&#125;,</span><br><span class="line">        <span class="string">"reply"</span>: &#123;<span class="string">'$max'</span>: <span class="string">'$reply'</span>&#125;,</span><br><span class="line">        <span class="string">"coin"</span>: &#123;<span class="string">'$max'</span>: <span class="string">'$coin'</span>&#125;,</span><br><span class="line">        <span class="string">"share"</span>: &#123;<span class="string">'$max'</span>: <span class="string">'$share'</span>&#125;,</span><br><span class="line">        <span class="string">"ctime"</span>: &#123;<span class="string">'$max'</span>: <span class="string">'$ctime'</span>&#125;,</span><br><span class="line">  	&#125;&#125;,</span><br><span class="line">  	&#123;<span class="string">"$sort"</span>: &#123;</span><br><span class="line">        <span class="string">'ctime'</span>: <span class="number">1</span></span><br><span class="line">  	&#125;&#125;</span><br><span class="line"> ])</span><br></pre></td></tr></table></figure>
-<p>这里先用<code>$match</code>去除对应时间区间的数据，再用<code>$group</code>进行分组处理，最后用<code>$sort</code>进行排序。</p>
-<p>查询结果：</p>
-<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">[&#123;</span><br><span class="line">    <span class="attr">"_id"</span> : NumberLong(<span class="number">1525910400000</span>),</span><br><span class="line">    <span class="attr">"coin"</span> : NumberLong(<span class="number">8421</span>),</span><br><span class="line">    <span class="attr">"view"</span> : NumberLong(<span class="number">109018</span>),</span><br><span class="line">    <span class="attr">"danmaku"</span> : NumberLong(<span class="number">2859</span>),</span><br><span class="line">    <span class="attr">"favorite"</span> : NumberLong(<span class="number">4939</span>),</span><br><span class="line">    <span class="attr">"reply"</span> : NumberLong(<span class="number">1799</span>),</span><br><span class="line">    <span class="attr">"share"</span> : NumberLong(<span class="number">837</span>),</span><br><span class="line">    <span class="attr">"ctime"</span> : ISODate(<span class="string">"2018-05-10T00:00:22.563Z"</span>)</span><br><span class="line">&#125;,</span><br><span class="line">// omitted</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
-<p>这里出现的字段是和<code>$group</code>中处理的字段一一对应，一些没有用到的字段就会被省略。注意这里的<code>_id</code>并不是mongo的ObjectId。</p>
-<h2 id="SpringData-mongoTemplate"><a href="#SpringData-mongoTemplate" class="headerlink" title="SpringData mongoTemplate"></a>SpringData mongoTemplate</h2><p>实际开发中我们可能会用到SpringData封装mongoTemplate来操作数据库。同样的，使用mongoTemplate也可以很方便的实现一样的效果。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">public List&lt;VideoStat&gt; getVideoStat(long aid, Date startTime, Date endTime) &#123;</span><br><span class="line">    long interval = (endTime.getTime() - startTime.getTime()) / 300;</span><br><span class="line">    TypedAggregation&lt;VideoStat&gt; agg = Aggregation.newAggregation(</span><br><span class="line">                VideoStat.class,</span><br><span class="line">                match(Criteria.where(&quot;aid&quot;).is(aid).and(&quot;ctime&quot;).gte(startTime).lte(endTime)),</span><br><span class="line">                project(&quot;ctime&quot;, &quot;coin&quot;, &quot;share&quot;, &quot;view&quot;, &quot;danmaku&quot;, &quot;favorite&quot;, &quot;reply&quot;)</span><br><span class="line">                        .andExpression(&quot;ceil((ctime - [0]) / [1])&quot;, new Date(0), interval)</span><br><span class="line">                        .as(&quot;cdate&quot;),</span><br><span class="line">                group(&quot;cdate&quot;)</span><br><span class="line">                        .max(&quot;view&quot;).as(&quot;view&quot;)</span><br><span class="line">                        .max(&quot;coin&quot;).as(&quot;coin&quot;)</span><br><span class="line">                        .max(&quot;danmaku&quot;).as(&quot;danmakuu&quot;)</span><br><span class="line">                        .max(&quot;favorite&quot;).as(&quot;favorite&quot;)</span><br><span class="line">                        .max(&quot;reply&quot;).as(&quot;reply&quot;)</span><br><span class="line">                        .max(&quot;share&quot;).as(&quot;share&quot;)</span><br><span class="line">                        .max(&quot;ctime&quot;).as(&quot;ctime&quot;),</span><br><span class="line">                sort(Sort.Direction.ASC, &quot;ctime&quot;));</span><br><span class="line">    return mongoTemplate.aggregate(agg, &quot;TRACE_VIDEO_STAT&quot;, VideoStat.class).getMappedResults();</span><br><span class="line">        </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>match方法缩小数据范围，project方法决定需要聚合的字段，group方法决定被分组的列表，后面的链时调用时对组内数据的统计处理，最后的sort是排序。</p>
-<p>这里用到的SpEL表达式<code>.andExpression(&quot;ceil((ctime - [0]) / [1])&quot;, new Date(0), interval)</code>，<code>[0]</code>是占位符，表达式支持对时间类型的直接运算，默认会转换为时间戳进行处理，还是非常方便的。</p>
+<h2 id="准备"><a href="#准备" class="headerlink" title="准备"></a>准备</h2><p>官方文档对于这种情况并没有给予更多的提示了，这个时候只能拿出强大的Google了（百度已经拯救不了）。<br>经过一番资料查找，得出以下结论：</p>
+<ul>
+<li>在<code>repair</code>模式失败的情况下，恢复MongoDB是比较困难了</li>
+<li>MongoDB的数据使用WiredTiger引擎进行存储，可以直接使用相关工具读取二进制文件数据</li>
+<li>网上有一篇成功恢复数据的文章可以参考 <a href="http://www.alexbevi.com/blog/2016/02/10/recovering-a-wiredtiger-collection-from-a-corrupt-mongodb-installation/" target="_blank" rel="noopener">Link</a></li>
+</ul>
+<p>按照资料，首先要找到你需要恢复的Collection所对应的<code>wt</code>文件，它们一般在Mongo安装目录的<code>data</code>文件夹下面，文件的格式应该类似这样<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">collection-0--282010455938071573.wt</span><br></pre></td></tr></table></figure></p>
+<p>然后把数据文件和<code>data</code>下面其他一些存有必要信息的文件一起复制到一个新的目录<code>mongo-bak</code>（为啥不在原来目录操作？又失败了怎么办），如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">collection-0--282010455938071573.wt</span><br><span class="line">_mdb_catalog.wt</span><br><span class="line">sizeStorer.wt</span><br><span class="line">storage.bson</span><br><span class="line">WiredTiger</span><br><span class="line">WiredTiger.basecfg</span><br><span class="line">WiredTiger.lock</span><br><span class="line">WiredTiger.turtle</span><br><span class="line">WiredTiger.wt</span><br></pre></td></tr></table></figure></p>
+<p>数据准备就绪，我们需要一个工具 wt utility，<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">wget http://source.wiredtiger.com/releases/wiredtiger-3.0.0.tar.bz2</span><br><span class="line">tar xvf wiredtiger-3.0.0.tar.bz2</span><br><span class="line">cd wiredtiger-3.0.0</span><br><span class="line">sudo yum install snappy-devel -y</span><br><span class="line">./configure --enable-snappy</span><br><span class="line">make</span><br></pre></td></tr></table></figure></p>
+<p>注意：我的系统是CentOS，如果你是Ubuntu的话，要把上面命令中的<br><code>sudo yum install snappy-devel -y</code><br>换成<br><code>sudo apt-get install libsnappy-dev build-essential</code></p>
+<p>snappy是必须要安装的插件，不然无法正常解码二进制数据问题（就算你使用zlib模式进行压缩，还是需要它）</p>
+<h2 id="打捞数据"><a href="#打捞数据" class="headerlink" title="打捞数据"></a>打捞数据</h2><p>装好工具后，执行<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./wt -v -h ../mongo-bak -C &quot;extensions=[./ext/compressors/snappy/.libs/libwiredtiger_snappy.so]&quot; -R salvage collection-0--282010455938071573.wt</span><br></pre></td></tr></table></figure></p>
+<p>其中<code>../mongo-bak</code>是我们刚刚放恢复文件的目录，<code>collection-0--282010455938071573.wt</code>就是需要恢复的wt文件</p>
+<p>顺利的话，可以看到这样的信息<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">WT_SESSION.salvage 77982300</span><br></pre></td></tr></table></figure></p>
+<p>里面的数字应该是可以恢复的记录，有时候你会发现这个数字比预想的要大，原因是mongo把删除操作也会缓存在内存中，意外关闭时来不及写入磁盘，导致数据量增多。</p>
+<p>另外，刚刚那个操作会重写wt文件里面的内容，所以尽量不要用源文件进行操作。修复好的wt文件并不能被mongo直接使用，我们需要使用wt工具里面的dump命令把里面的数据进行导出， 输入以下命令：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./wt -v -h ../mongo-bak -C &quot;extensions=[./ext/compressors/snappy/.libs/libwiredtiger_snappy.so]&quot; -R dump -f ../collection.dump collection-0--282010455938071573</span><br></pre></td></tr></table></figure></p>
+<p>这个命令会跑比较长的时间，可以用另一个命令行窗口查看<code>collection.dump</code>文件的生成情况，值得注意的事，根据集合内容的不同，dump文件的大小也有比较大的差异，我的一个3G大小zlib模式的wt文件，输出的dump有27G大小，一定要准备充足的磁盘空间，另外内存大概也会占用和wt文件近似的大小。</p>
+<h2 id="重建数据"><a href="#重建数据" class="headerlink" title="重建数据"></a>重建数据</h2><p>原来的Mongo已经不可用了，我们需要一个新的Mongo来承载恢复出来的数据，首先在新的Mongo中建立一个collection<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">use anydb</span><br><span class="line">db.back.insert(&#123;test: 1&#125;)</span><br><span class="line">db.back.remove(&#123;&#125;)</span><br><span class="line">db.back.stats()</span><br></pre></td></tr></table></figure></p>
+<p>这里在<code>anydb</code>数据库下建立了<code>back</code>集合，stats命令为了查看这个集合对应的wt文件,在输出的信息里，能找到这样一行<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&quot;uri&quot; : &quot;statistics:table:collection-7895--1435676552983097781&quot;</span><br></pre></td></tr></table></figure></p>
+<p>其中的<code>collection-7895--1435676552983097781</code>就是wt文件的名字了</p>
+<p>先把新的mongo停了，我们需要直接对数据文件进行操作<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./wt -v -h ../data -C &quot;extensions=[./ext/compressors/snappy/.libs/libwiredtiger_snappy.so]&quot; -R load -f ../collection.dump -r collection-7895--1435676552983097781</span><br></pre></td></tr></table></figure></p>
+<p>这里的<code>../data</code>是新mongo的存放数据文件的地址，wt工具会把dump直接写入对应的集合文件里，完成后会看到<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">table:collection-7895--1435676552983097781: 77982300</span><br></pre></td></tr></table></figure></p>
+<p>好了，我们再次启动mongo<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">root&gt; show dbs</span><br><span class="line">anydb → 3.087GB</span><br><span class="line">local → 0.000GB</span><br><span class="line">root&gt; use anydb</span><br><span class="line">switched to db anydb</span><br><span class="line">anydb&gt; show collections</span><br><span class="line">back → 0.000GB / 3.087GB</span><br><span class="line">anydb&gt; db.back.count()</span><br><span class="line">0</span><br></pre></td></tr></table></figure></p>
+<p>诡异的事情出现了，数据库大小看起来是没有问题的，但查不到记录总数<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">anydb&gt; db.back.find(&#123;&#125;, &#123;_id: 1&#125;)</span><br><span class="line">&#123;</span><br><span class="line">  &quot;_id&quot;: ObjectId(&quot;55e07f3b2e967329c888ac74&quot;)</span><br><span class="line">&#125;</span><br><span class="line">&#123;</span><br><span class="line">  &quot;_id&quot;: ObjectId(&quot;55e07f3b2e967329c888ac76&quot;)</span><br><span class="line">&#125;</span><br><span class="line">...</span><br><span class="line">&#123;</span><br><span class="line">  &quot;_id&quot;: ObjectId(&quot;55e07f402e967329c888ac85&quot;)</span><br><span class="line">&#125;</span><br><span class="line">Fetched 20 record(s) in 29ms -- More[true]</span><br></pre></td></tr></table></figure></p>
+<p>可见数据已经写入了，但数据库的状态还是有点问题的,我们直接执行<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">db.repairDatabase()</span><br></pre></td></tr></table></figure></p>
+<p>进行修复,然后就可以正常查看记录总数了<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">anydb&gt; db.back.count()</span><br><span class="line">7789230</span><br></pre></td></tr></table></figure></p>
+<p>太好了，现在数据恢复了，但里面的内容肯定有不同程度的缺失，需要进一步的处理。</p>
+<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><p>根据网上的资料，本文中的操作仅对 &gt;=3.2版本的mongo有效。</p>
+<p>正确mongo流程可以按照官网提示，使用 <code>--repair</code> 命令进入修复模式，mongo会对所有数据进行一次扫描，并且重建索引，等到修复完毕就可以正常启动了。<br>但这个操作是有一个前提的，那就是文件数据必须要完整。问题是我的Mongo是被强制kill的，文件数据难免已经混乱，所以每次修复程序在重建索引这一步都会报错。</p>
+<p>[本文谢绝转载]</p>
 
       
 
@@ -194,18 +207,18 @@
   
 <nav id="article-nav">
   
-    <a href="/2018/07/08/Node爬虫指北/01-基础环境搭建/" id="article-nav-newer" class="article-nav-link-wrap">
+    <a href="/2018/05/15/MongoDB/MongoDB_aggregation_query_in_time_duration/" id="article-nav-newer" class="article-nav-link-wrap">
       <i class="icon-circle-left"></i>
       <div class="article-nav-title">
         
-          01-基础环境搭建
+          MongoDB基于时间段的聚合查询
         
       </div>
     </a>
   
   
-    <a href="/2018/05/06/MongoDB/Wiredtiger工具恢复MongoDB数据/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">Wiredtiger工具恢复MongoDB数据</div>
+    <a href="/2018/04/05/kms_server_activite_office/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">KMS服务器搭建并激活Office</div>
       <i class="icon-circle-right"></i>
     </a>
   

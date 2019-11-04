@@ -6,19 +6,19 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="nintha.github.io">
-  <title>Wiredtiger工具恢复MongoDB数据 | Broken Pipe | ninthakeey&#39;s blog</title>
+  <title>03-保存数据到数据库 | Broken Pipe | ninthakeey&#39;s blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="前言前几日在VPS折腾MongoDB，由于机器内存实在是太小了（1G，又跑了别的程序），进行重建索引操作时，内存不足被系统给kill了。强制kill的Mongo无法在repair模式下恢复，只能直接用Wiredtiger工具读取二进制数据文件进行恢复了。">
+  <meta name="description" content="很多情况下，为了方便使用，我们习惯把数据存储在数据库中，本章将在前一章的基础上，加入保存数据到MongoDB的逻辑。 在开始前需要确保已经成功安装了MongoDB（localhost:27017）和完成前面的章节内容 Coding为了方便Nodejs调用MongoDB，我们使用mongojs这个第三方包，它可以让我们使用近似原生的MongoDB语法来处理数据，详细语法可以查看相关文档。 安装mon">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Wiredtiger工具恢复MongoDB数据">
-<meta property="og:url" content="nintha.github.io/2018/05/06/MongoDB/Wiredtiger工具恢复MongoDB数据/index.html">
+<meta property="og:title" content="03-保存数据到数据库">
+<meta property="og:url" content="nintha.github.io/2018/07/08/node_spider_compass/03-save_into_db/index.html">
 <meta property="og:site_name" content="Broken Pipe | ninthakeey&#39;s blog">
-<meta property="og:description" content="前言前几日在VPS折腾MongoDB，由于机器内存实在是太小了（1G，又跑了别的程序），进行重建索引操作时，内存不足被系统给kill了。强制kill的Mongo无法在repair模式下恢复，只能直接用Wiredtiger工具读取二进制数据文件进行恢复了。">
+<meta property="og:description" content="很多情况下，为了方便使用，我们习惯把数据存储在数据库中，本章将在前一章的基础上，加入保存数据到MongoDB的逻辑。 在开始前需要确保已经成功安装了MongoDB（localhost:27017）和完成前面的章节内容 Coding为了方便Nodejs调用MongoDB，我们使用mongojs这个第三方包，它可以让我们使用近似原生的MongoDB语法来处理数据，详细语法可以查看相关文档。 安装mon">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2018-09-02T12:48:20.171Z">
+<meta property="og:updated_time" content="2018-09-02T12:48:20.155Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Wiredtiger工具恢复MongoDB数据">
-<meta name="twitter:description" content="前言前几日在VPS折腾MongoDB，由于机器内存实在是太小了（1G，又跑了别的程序），进行重建索引操作时，内存不足被系统给kill了。强制kill的Mongo无法在repair模式下恢复，只能直接用Wiredtiger工具读取二进制数据文件进行恢复了。">
+<meta name="twitter:title" content="03-保存数据到数据库">
+<meta name="twitter:description" content="很多情况下，为了方便使用，我们习惯把数据存储在数据库中，本章将在前一章的基础上，加入保存数据到MongoDB的逻辑。 在开始前需要确保已经成功安装了MongoDB（localhost:27017）和完成前面的章节内容 Coding为了方便Nodejs调用MongoDB，我们使用mongojs这个第三方包，它可以让我们使用近似原生的MongoDB语法来处理数据，详细语法可以查看相关文档。 安装mon">
   
   
     <link rel="icon" href="/favicon.png">
@@ -134,58 +134,37 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            <article id="post-MongoDB/Wiredtiger工具恢复MongoDB数据" class="article article-type-post " itemscope itemprop="blogPost">
+            <article id="post-node_spider_compass/03-save_into_db" class="article article-type-post " itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 class="article-title" itemprop="name">
-      Wiredtiger工具恢复MongoDB数据
+      03-保存数据到数据库
     </h1>
   
 
         
-        <a href="/2018/05/06/MongoDB/Wiredtiger工具恢复MongoDB数据/" class="archive-article-date">
-  	<time datetime="2018-05-05T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-05-06</time>
+        <a href="/2018/07/08/node_spider_compass/03-save_into_db/" class="archive-article-date">
+  	<time datetime="2018-07-07T16:00:02.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-07-08</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>前几日在VPS折腾MongoDB，由于机器内存实在是太小了（1G，又跑了别的程序），进行重建索引操作时，内存不足被系统给kill了。强制kill的Mongo无法在<code>repair</code>模式下恢复，只能直接用Wiredtiger工具读取二进制数据文件进行恢复了。</p>
-<a id="more"></a>
-<h2 id="准备"><a href="#准备" class="headerlink" title="准备"></a>准备</h2><p>官方文档对于这种情况并没有给予更多的提示了，这个时候只能拿出强大的Google了（百度已经拯救不了）。<br>经过一番资料查找，得出以下结论：</p>
-<ul>
-<li>在<code>repair</code>模式失败的情况下，恢复MongoDB是比较困难了</li>
-<li>MongoDB的数据使用WiredTiger引擎进行存储，可以直接使用相关工具读取二进制文件数据</li>
-<li>网上有一篇成功恢复数据的文章可以参考 <a href="http://www.alexbevi.com/blog/2016/02/10/recovering-a-wiredtiger-collection-from-a-corrupt-mongodb-installation/" target="_blank" rel="noopener">Link</a></li>
-</ul>
-<p>按照资料，首先要找到你需要恢复的Collection所对应的<code>wt</code>文件，它们一般在Mongo安装目录的<code>data</code>文件夹下面，文件的格式应该类似这样<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">collection-0--282010455938071573.wt</span><br></pre></td></tr></table></figure></p>
-<p>然后把数据文件和<code>data</code>下面其他一些存有必要信息的文件一起复制到一个新的目录<code>mongo-bak</code>（为啥不在原来目录操作？又失败了怎么办），如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">collection-0--282010455938071573.wt</span><br><span class="line">_mdb_catalog.wt</span><br><span class="line">sizeStorer.wt</span><br><span class="line">storage.bson</span><br><span class="line">WiredTiger</span><br><span class="line">WiredTiger.basecfg</span><br><span class="line">WiredTiger.lock</span><br><span class="line">WiredTiger.turtle</span><br><span class="line">WiredTiger.wt</span><br></pre></td></tr></table></figure></p>
-<p>数据准备就绪，我们需要一个工具 wt utility，<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">wget http://source.wiredtiger.com/releases/wiredtiger-3.0.0.tar.bz2</span><br><span class="line">tar xvf wiredtiger-3.0.0.tar.bz2</span><br><span class="line">cd wiredtiger-3.0.0</span><br><span class="line">sudo yum install snappy-devel -y</span><br><span class="line">./configure --enable-snappy</span><br><span class="line">make</span><br></pre></td></tr></table></figure></p>
-<p>注意：我的系统是CentOS，如果你是Ubuntu的话，要把上面命令中的<br><code>sudo yum install snappy-devel -y</code><br>换成<br><code>sudo apt-get install libsnappy-dev build-essential</code></p>
-<p>snappy是必须要安装的插件，不然无法正常解码二进制数据问题（就算你使用zlib模式进行压缩，还是需要它）</p>
-<h2 id="打捞数据"><a href="#打捞数据" class="headerlink" title="打捞数据"></a>打捞数据</h2><p>装好工具后，执行<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./wt -v -h ../mongo-bak -C &quot;extensions=[./ext/compressors/snappy/.libs/libwiredtiger_snappy.so]&quot; -R salvage collection-0--282010455938071573.wt</span><br></pre></td></tr></table></figure></p>
-<p>其中<code>../mongo-bak</code>是我们刚刚放恢复文件的目录，<code>collection-0--282010455938071573.wt</code>就是需要恢复的wt文件</p>
-<p>顺利的话，可以看到这样的信息<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">WT_SESSION.salvage 77982300</span><br></pre></td></tr></table></figure></p>
-<p>里面的数字应该是可以恢复的记录，有时候你会发现这个数字比预想的要大，原因是mongo把删除操作也会缓存在内存中，意外关闭时来不及写入磁盘，导致数据量增多。</p>
-<p>另外，刚刚那个操作会重写wt文件里面的内容，所以尽量不要用源文件进行操作。修复好的wt文件并不能被mongo直接使用，我们需要使用wt工具里面的dump命令把里面的数据进行导出， 输入以下命令：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./wt -v -h ../mongo-bak -C &quot;extensions=[./ext/compressors/snappy/.libs/libwiredtiger_snappy.so]&quot; -R dump -f ../collection.dump collection-0--282010455938071573</span><br></pre></td></tr></table></figure></p>
-<p>这个命令会跑比较长的时间，可以用另一个命令行窗口查看<code>collection.dump</code>文件的生成情况，值得注意的事，根据集合内容的不同，dump文件的大小也有比较大的差异，我的一个3G大小zlib模式的wt文件，输出的dump有27G大小，一定要准备充足的磁盘空间，另外内存大概也会占用和wt文件近似的大小。</p>
-<h2 id="重建数据"><a href="#重建数据" class="headerlink" title="重建数据"></a>重建数据</h2><p>原来的Mongo已经不可用了，我们需要一个新的Mongo来承载恢复出来的数据，首先在新的Mongo中建立一个collection<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">use anydb</span><br><span class="line">db.back.insert(&#123;test: 1&#125;)</span><br><span class="line">db.back.remove(&#123;&#125;)</span><br><span class="line">db.back.stats()</span><br></pre></td></tr></table></figure></p>
-<p>这里在<code>anydb</code>数据库下建立了<code>back</code>集合，stats命令为了查看这个集合对应的wt文件,在输出的信息里，能找到这样一行<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&quot;uri&quot; : &quot;statistics:table:collection-7895--1435676552983097781&quot;</span><br></pre></td></tr></table></figure></p>
-<p>其中的<code>collection-7895--1435676552983097781</code>就是wt文件的名字了</p>
-<p>先把新的mongo停了，我们需要直接对数据文件进行操作<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./wt -v -h ../data -C &quot;extensions=[./ext/compressors/snappy/.libs/libwiredtiger_snappy.so]&quot; -R load -f ../collection.dump -r collection-7895--1435676552983097781</span><br></pre></td></tr></table></figure></p>
-<p>这里的<code>../data</code>是新mongo的存放数据文件的地址，wt工具会把dump直接写入对应的集合文件里，完成后会看到<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">table:collection-7895--1435676552983097781: 77982300</span><br></pre></td></tr></table></figure></p>
-<p>好了，我们再次启动mongo<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">root&gt; show dbs</span><br><span class="line">anydb → 3.087GB</span><br><span class="line">local → 0.000GB</span><br><span class="line">root&gt; use anydb</span><br><span class="line">switched to db anydb</span><br><span class="line">anydb&gt; show collections</span><br><span class="line">back → 0.000GB / 3.087GB</span><br><span class="line">anydb&gt; db.back.count()</span><br><span class="line">0</span><br></pre></td></tr></table></figure></p>
-<p>诡异的事情出现了，数据库大小看起来是没有问题的，但查不到记录总数<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">anydb&gt; db.back.find(&#123;&#125;, &#123;_id: 1&#125;)</span><br><span class="line">&#123;</span><br><span class="line">  &quot;_id&quot;: ObjectId(&quot;55e07f3b2e967329c888ac74&quot;)</span><br><span class="line">&#125;</span><br><span class="line">&#123;</span><br><span class="line">  &quot;_id&quot;: ObjectId(&quot;55e07f3b2e967329c888ac76&quot;)</span><br><span class="line">&#125;</span><br><span class="line">...</span><br><span class="line">&#123;</span><br><span class="line">  &quot;_id&quot;: ObjectId(&quot;55e07f402e967329c888ac85&quot;)</span><br><span class="line">&#125;</span><br><span class="line">Fetched 20 record(s) in 29ms -- More[true]</span><br></pre></td></tr></table></figure></p>
-<p>可见数据已经写入了，但数据库的状态还是有点问题的,我们直接执行<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">db.repairDatabase()</span><br></pre></td></tr></table></figure></p>
-<p>进行修复,然后就可以正常查看记录总数了<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">anydb&gt; db.back.count()</span><br><span class="line">7789230</span><br></pre></td></tr></table></figure></p>
-<p>太好了，现在数据恢复了，但里面的内容肯定有不同程度的缺失，需要进一步的处理。</p>
-<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><p>根据网上的资料，本文中的操作仅对 &gt;=3.2版本的mongo有效。</p>
-<p>正确mongo流程可以按照官网提示，使用 <code>--repair</code> 命令进入修复模式，mongo会对所有数据进行一次扫描，并且重建索引，等到修复完毕就可以正常启动了。<br>但这个操作是有一个前提的，那就是文件数据必须要完整。问题是我的Mongo是被强制kill的，文件数据难免已经混乱，所以每次修复程序在重建索引这一步都会报错。</p>
-<p>[本文谢绝转载]</p>
+        <p>很多情况下，为了方便使用，我们习惯把数据存储在数据库中，本章将在前一章的基础上，加入保存数据到MongoDB的逻辑。</p>
+<p>在开始前需要确保已经成功安装了MongoDB（localhost:27017）和完成前面的章节内容</p>
+<h2 id="Coding"><a href="#Coding" class="headerlink" title="Coding"></a>Coding</h2><p>为了方便Nodejs调用MongoDB，我们使用<code>mongojs</code>这个第三方包，它可以让我们使用近似原生的MongoDB语法来处理数据，详细语法可以查看<a href="https://www.npmjs.com/package/mongojs" target="_blank" rel="noopener">相关文档</a>。</p>
+<p>安装<code>mongojs</code>：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm i mongojs --save</span><br></pre></td></tr></table></figure>
+<p>我们再新建一个名为<code>dao.js</code>的文件，里面将存放关于和MongoDB相关的逻辑，并键入以下代码:</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> mongojs = <span class="built_in">require</span>(<span class="string">'mongojs'</span>) <span class="comment">// 引入mongojs包</span></span><br><span class="line"><span class="comment">// 连接本地mongodb，关联名为'simple_spider'的库中名为'test'的集合(表)</span></span><br><span class="line"><span class="keyword">const</span> localdb = mongojs(<span class="string">'simple_spider'</span>, [<span class="string">'test'</span>])</span><br><span class="line"></span><br><span class="line"><span class="comment">//保存数据</span></span><br><span class="line"><span class="keyword">const</span> saveData = <span class="function">(<span class="params">data,cb</span>) =&gt;</span> &#123;</span><br><span class="line">	localdb.test.save(data, (err, res)=&gt;&#123;</span><br><span class="line">	 	cb &amp;&amp; cb(err, res)</span><br><span class="line">	&#125;)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 打印所有数据</span></span><br><span class="line"><span class="keyword">const</span> printAllData = <span class="function">(<span class="params">cb</span>) =&gt;</span> &#123;</span><br><span class="line">	localdb.test.find(&#123;&#125;,(err, docs)=&gt;&#123;</span><br><span class="line">		<span class="built_in">console</span>.log(docs)</span><br><span class="line">		cb &amp;&amp; cb(err, docs)</span><br><span class="line">	&#125;)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 关闭mongodb连接，在程序结束时调用，可以防止内存泄漏</span></span><br><span class="line"><span class="keyword">const</span> closeMongo = <span class="function"><span class="params">()</span> =&gt;</span> localdb.close()</span><br><span class="line"></span><br><span class="line"><span class="comment">// 将方法暴露出去</span></span><br><span class="line"><span class="built_in">module</span>.exports = &#123;</span><br><span class="line">	saveData,printAllData,closeMongo</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><code>dao.js</code>提供了三个方法供<code>index.js</code>进行调用，同时我们需要修改<code>index.js</code>的代码：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> superagent = <span class="built_in">require</span>(<span class="string">'superagent'</span>)</span><br><span class="line"><span class="keyword">const</span> fs = <span class="built_in">require</span>(<span class="string">'fs'</span>)</span><br><span class="line"><span class="keyword">const</span> dao = <span class="built_in">require</span>(<span class="string">'./dao'</span>) </span><br><span class="line"></span><br><span class="line">superagent</span><br><span class="line">	.get(<span class="string">'https://api.bilibili.com/x/web-interface/archive/stat'</span>)</span><br><span class="line">	.query(&#123; <span class="attr">aid</span>:<span class="number">26186448</span> &#125;)</span><br><span class="line">	.then(<span class="function"><span class="params">res</span> =&gt;</span> &#123;</span><br><span class="line">		<span class="keyword">const</span> data = res.body.data <span class="comment">// 取出需要保存的数据</span></span><br><span class="line">		dao.saveData(data, (err,res)=&gt;&#123;</span><br><span class="line">			<span class="built_in">console</span>.log(<span class="string">'saved data'</span>)</span><br><span class="line">			<span class="comment">//打印数据库里保存的数据，然后关闭数据库连接</span></span><br><span class="line">			dao.printAllData( <span class="function"><span class="params">()</span> =&gt;</span> dao.closeMongo() ) </span><br><span class="line">		&#125;)</span><br><span class="line">	&#125;)</span><br><span class="line">	.catch(<span class="function"><span class="params">err</span> =&gt;</span> <span class="built_in">console</span>.error(err))</span><br></pre></td></tr></table></figure>
+<p>运行代码，顺利的话可以看到这样的输出：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span> node index</span><br><span class="line">saved data</span><br><span class="line">[ &#123; _id: 5b41d634f3df89032c834d5b,</span><br><span class="line">    aid: 26186448,</span><br><span class="line">    view: 619751,</span><br><span class="line">    danmaku: 12053,</span><br><span class="line">    reply: 3500,</span><br><span class="line">    favorite: 14961,</span><br><span class="line">    coin: 40699,</span><br><span class="line">    share: 1676,</span><br><span class="line">    like: 20751,</span><br><span class="line">    now_rank: 0,</span><br><span class="line">    his_rank: 1,</span><br><span class="line">    no_reprint: 1,</span><br><span class="line">    copyright: 1 &#125; ]</span><br></pre></td></tr></table></figure>
 
       
 
@@ -195,6 +174,17 @@
       
       
       
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/Node爬虫指北//" class="article-tag-list-link color4">Node爬虫指北</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
 
       
 
@@ -207,18 +197,18 @@
   
 <nav id="article-nav">
   
-    <a href="/2018/05/15/MongoDB/MongoDB基于时间段的聚合查询/" id="article-nav-newer" class="article-nav-link-wrap">
+    <a href="/2018/07/08/node_spider_compass/04-against_website_limitation/" id="article-nav-newer" class="article-nav-link-wrap">
       <i class="icon-circle-left"></i>
       <div class="article-nav-title">
         
-          MongoDB基于时间段的聚合查询
+          04-应对网站的限制
         
       </div>
     </a>
   
   
-    <a href="/2018/04/05/KMS服务器搭建并激活Office/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">KMS服务器搭建并激活Office</div>
+    <a href="/2018/07/08/node_spider_compass/02-impl_a_simple_spider/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">02-实现一个简单的爬虫</div>
       <i class="icon-circle-right"></i>
     </a>
   

@@ -6,19 +6,19 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="nintha.github.io">
-  <title>01-基础环境搭建 | Broken Pipe | ninthakeey&#39;s blog</title>
+  <title>Java处理Webp图片格式转换 | Broken Pipe | ninthakeey&#39;s blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="爬虫的基础环境主要包括Nodejs运行环境和MongoDB数据库，其中在《实现一个简单的爬虫》章节中仅需要Nodejs运行环境，在《保存数据到数据库》章节中开始使用MongoDB数据库；之后的章节里面，Nodejs运行环境和MongoDB数据库都会被用到。 Nodejs运行环境和MongoDB数据库的安装教程网上已经有很多了，这里提供官网的链接： Nodejs MongoDB 注：教程需要的nod">
+  <meta name="description" content="前言Webp是Google推出的一种新型图片格式，相比于 传统的PNG/JPG图片有着更小体积的优势，在Web中有着广泛的应用。由于Webp格式推出比较晚， Jdk 内置的图片编解码库对此并不支持。 网上给出的Java环境解决方案往往需要手动在java.library.path中安装对应的动态链接库，windows是dll文件，linux是so文件。这对于开发部署非常不方便。 本文提供一种无需手动">
 <meta property="og:type" content="article">
-<meta property="og:title" content="01-基础环境搭建">
-<meta property="og:url" content="nintha.github.io/2018/07/08/Node爬虫指北/01-基础环境搭建/index.html">
+<meta property="og:title" content="Java处理Webp图片格式转换">
+<meta property="og:url" content="nintha.github.io/2018/09/09/java_handle_webp_images/index.html">
 <meta property="og:site_name" content="Broken Pipe | ninthakeey&#39;s blog">
-<meta property="og:description" content="爬虫的基础环境主要包括Nodejs运行环境和MongoDB数据库，其中在《实现一个简单的爬虫》章节中仅需要Nodejs运行环境，在《保存数据到数据库》章节中开始使用MongoDB数据库；之后的章节里面，Nodejs运行环境和MongoDB数据库都会被用到。 Nodejs运行环境和MongoDB数据库的安装教程网上已经有很多了，这里提供官网的链接： Nodejs MongoDB 注：教程需要的nod">
+<meta property="og:description" content="前言Webp是Google推出的一种新型图片格式，相比于 传统的PNG/JPG图片有着更小体积的优势，在Web中有着广泛的应用。由于Webp格式推出比较晚， Jdk 内置的图片编解码库对此并不支持。 网上给出的Java环境解决方案往往需要手动在java.library.path中安装对应的动态链接库，windows是dll文件，linux是so文件。这对于开发部署非常不方便。 本文提供一种无需手动">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2018-09-02T12:48:20.155Z">
+<meta property="og:updated_time" content="2018-09-08T19:13:53.909Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="01-基础环境搭建">
-<meta name="twitter:description" content="爬虫的基础环境主要包括Nodejs运行环境和MongoDB数据库，其中在《实现一个简单的爬虫》章节中仅需要Nodejs运行环境，在《保存数据到数据库》章节中开始使用MongoDB数据库；之后的章节里面，Nodejs运行环境和MongoDB数据库都会被用到。 Nodejs运行环境和MongoDB数据库的安装教程网上已经有很多了，这里提供官网的链接： Nodejs MongoDB 注：教程需要的nod">
+<meta name="twitter:title" content="Java处理Webp图片格式转换">
+<meta name="twitter:description" content="前言Webp是Google推出的一种新型图片格式，相比于 传统的PNG/JPG图片有着更小体积的优势，在Web中有着广泛的应用。由于Webp格式推出比较晚， Jdk 内置的图片编解码库对此并不支持。 网上给出的Java环境解决方案往往需要手动在java.library.path中安装对应的动态链接库，windows是dll文件，linux是so文件。这对于开发部署非常不方便。 本文提供一种无需手动">
   
   
     <link rel="icon" href="/favicon.png">
@@ -134,31 +134,45 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            <article id="post-Node爬虫指北/01-基础环境搭建" class="article article-type-post " itemscope itemprop="blogPost">
+            <article id="post-java_handle_webp_images" class="article article-type-post " itemscope itemprop="blogPost">
   <div class="article-inner">
     
       <header class="article-header">
         
   
     <h1 class="article-title" itemprop="name">
-      01-基础环境搭建
+      Java处理Webp图片格式转换
     </h1>
   
 
         
-        <a href="/2018/07/08/Node爬虫指北/01-基础环境搭建/" class="archive-article-date">
-  	<time datetime="2018-07-07T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-07-08</time>
+        <a href="/2018/09/09/java_handle_webp_images/" class="archive-article-date">
+  	<time datetime="2018-09-08T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-09-09</time>
 </a>
         
       </header>
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p>爬虫的基础环境主要包括Nodejs运行环境和MongoDB数据库，其中在《实现一个简单的爬虫》章节中仅需要Nodejs运行环境，在《保存数据到数据库》章节中开始使用MongoDB数据库；之后的章节里面，Nodejs运行环境和MongoDB数据库都会被用到。</p>
-<p>Nodejs运行环境和MongoDB数据库的安装教程网上已经有很多了，这里提供官网的链接：</p>
-<p><a href="https://nodejs.org/zh-cn/" target="_blank" rel="noopener">Nodejs</a></p>
-<p><a href="https://www.mongodb.com/" target="_blank" rel="noopener">MongoDB</a></p>
-<p>注：教程需要的nodejs的版本大于8.9，mongodb大于3.2</p>
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>Webp是Google推出的一种新型图片格式，相比于 传统的PNG/JPG图片有着更小体积的优势，在Web中有着广泛的应用。由于Webp格式推出比较晚， Jdk 内置的图片编解码库对此并不支持。</p>
+<p>网上给出的Java环境解决方案往往需要手动在<code>java.library.path</code>中安装对应的动态链接库，windows是dll文件，linux是so文件。这对于开发部署非常不方便。</p>
+<p>本文提供一种无需手动安装动态链接库，同时可以方便处理Webp的解决方案</p>
+<a id="more"></a>
+<h2 id="准备"><a href="#准备" class="headerlink" title="准备"></a>准备</h2><p>先从github上面下载所需要的jar包</p>
+<p><a href="https://github.com/nintha/webp-imageio-core/releases" target="_blank" rel="noopener">webp-imageio-core-0.1.0.jar</a></p>
+<p>由于这个项目并未发布到maven中央仓库，所以需要手动导入本地jar包.</p>
+<p>如果你用的是gradle，可以把jar包放入<code>src/main/resource/libs</code>目录，并在<code>build.gradle</code>中加入依赖</p>
+<figure class="highlight groovy"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">dependencies &#123;</span><br><span class="line">    compile fileTree(<span class="string">dir:</span><span class="string">'src/main/resources/libs'</span>,<span class="string">include:</span>[<span class="string">'*.jar'</span>])</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如果你用的是maven，可以把jar包放入<code>${project.basedir}/libs</code>目录，并在<code>pom.xml</code>中加入依赖</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependency&gt;  </span><br><span class="line">    &lt;groupId&gt;com.github.nintha&lt;/groupId&gt;  </span><br><span class="line">    &lt;artifactId&gt;webp-imageio-core&lt;/artifactId&gt;  </span><br><span class="line">    &lt;version&gt;&#123;versoin&#125;&lt;/version&gt;  </span><br><span class="line">    &lt;scope&gt;system&lt;/scope&gt;  </span><br><span class="line">    &lt;systemPath&gt;$&#123;project.basedir&#125;/libs/webp-imageio-core-&#123;version&#125;.jar&lt;/systemPath&gt;  </span><br><span class="line">&lt;/dependency&gt;</span><br></pre></td></tr></table></figure>
+<h2 id="例子"><a href="#例子" class="headerlink" title="例子"></a>例子</h2><p>完整代码见 <a href="https://github.com/nintha/webp-imageio-core，以下为部分摘录" target="_blank" rel="noopener">https://github.com/nintha/webp-imageio-core，以下为部分摘录</a></p>
+<p>Webp编码</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String args[])</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    String inputPngPath = <span class="string">"test_pic/test.png"</span>;</span><br><span class="line">    String inputJpgPath = <span class="string">"test_pic/test.jpg"</span>;</span><br><span class="line">    String outputWebpPath = <span class="string">"test_pic/test_.webp"</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Obtain an image to encode from somewhere</span></span><br><span class="line">    BufferedImage image = ImageIO.read(<span class="keyword">new</span> File(inputJpgPath));</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Obtain a WebP ImageWriter instance</span></span><br><span class="line">    ImageWriter writer = ImageIO.getImageWritersByMIMEType(<span class="string">"image/webp"</span>).next();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Configure encoding parameters</span></span><br><span class="line">    WebPWriteParam writeParam = <span class="keyword">new</span> WebPWriteParam(writer.getLocale());</span><br><span class="line">    writeParam.setCompressionMode(WebPWriteParam.MODE_DEFAULT);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Configure the output on the ImageWriter</span></span><br><span class="line">    writer.setOutput(<span class="keyword">new</span> FileImageOutputStream(<span class="keyword">new</span> File(outputWebpPath)));</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Encode</span></span><br><span class="line">    writer.write(<span class="keyword">null</span>, <span class="keyword">new</span> IIOImage(image, <span class="keyword">null</span>, <span class="keyword">null</span>), writeParam);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Webp解码</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String args[])</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    String inputWebpPath = <span class="string">"test_pic/test.webp"</span>;</span><br><span class="line">    String outputJpgPath = <span class="string">"test_pic/test_.jpg"</span>;</span><br><span class="line">    String outputJpegPath = <span class="string">"test_pic/test_.jpeg"</span>;</span><br><span class="line">    String outputPngPath = <span class="string">"test_pic/test_.png"</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Obtain a WebP ImageReader instance</span></span><br><span class="line">    ImageReader reader = ImageIO.getImageReadersByMIMEType(<span class="string">"image/webp"</span>).next();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Configure decoding parameters</span></span><br><span class="line">    WebPReadParam readParam = <span class="keyword">new</span> WebPReadParam();</span><br><span class="line">    readParam.setBypassFiltering(<span class="keyword">true</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Configure the input on the ImageReader</span></span><br><span class="line">    reader.setInput(<span class="keyword">new</span> FileImageInputStream(<span class="keyword">new</span> File(inputWebpPath)));</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Decode the image</span></span><br><span class="line">    BufferedImage image = reader.read(<span class="number">0</span>, readParam);</span><br><span class="line"></span><br><span class="line">    ImageIO.write(image, <span class="string">"png"</span>, <span class="keyword">new</span> File(outputPngPath));</span><br><span class="line">    ImageIO.write(image, <span class="string">"jpg"</span>, <span class="keyword">new</span> File(outputJpgPath));</span><br><span class="line">    ImageIO.write(image, <span class="string">"jpeg"</span>, <span class="keyword">new</span> File(outputJpegPath));</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="关于webp-imageio-core项目"><a href="#关于webp-imageio-core项目" class="headerlink" title="关于webp-imageio-core项目"></a>关于webp-imageio-core项目</h2><p>这个项目是基于于 <a href="https://github.com/qwong/j-webp" target="_blank" rel="noopener">qwong/j-webp</a>项目，而 <a href="https://github.com/qwong/j-webp" target="_blank" rel="noopener">qwong/j-webp</a> 是基于 <a href="https://bitbucket.org/luciad/webp-imageio" target="_blank" rel="noopener">webp project of Luciad</a> 0.4.2项目。</p>
+<p>webp project of Luciad这个项目提供了java上一个关于处理webp的可用实现，但是它需要开发者手动<code>java.library.path</code>中安装对应的动态链接库，非常不方便。qwong/j-webp项目作者为了解决这个问题，改进了对动态链接库的读取方式，把从<code>java.library.path</code>读取改成了从项目resource文件中读取（具体内容见<code>com.luciad.imageio.webp.WebP.loadNativeLibrary</code>方法）。</p>
+<p>虽然qwong/j-webp项目解决了动态链接库依赖问题，但是它的作者并未对这些代码提供一个良好封装，毕竟开发者不希望在自己项目里面直接引入第三方包的源码，所以有了<code>webp-imageio-core</code>提供一个可用的jar包，只要导入项目即可使用。</p>
 
       
 
@@ -168,17 +182,6 @@
       
       
       
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/Node爬虫指北//" class="article-tag-list-link color4">Node爬虫指北</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
 
       
 
@@ -191,18 +194,18 @@
   
 <nav id="article-nav">
   
-    <a href="/2018/07/08/Node爬虫指北/02-实现一个简单的爬虫/" id="article-nav-newer" class="article-nav-link-wrap">
+    <a href="/2018/11/21/generate_video_stream_from_image_stream/" id="article-nav-newer" class="article-nav-link-wrap">
       <i class="icon-circle-left"></i>
       <div class="article-nav-title">
         
-          02-实现一个简单的爬虫
+          从图片流生成直播视频流
         
       </div>
     </a>
   
   
-    <a href="/2018/05/15/MongoDB/MongoDB基于时间段的聚合查询/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">MongoDB基于时间段的聚合查询</div>
+    <a href="/2018/07/10/node_spider_compass/05-lite_optimization/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">05-微小的优化</div>
       <i class="icon-circle-right"></i>
     </a>
   
