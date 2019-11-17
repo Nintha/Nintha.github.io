@@ -135,6 +135,102 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-rust-lang/Blog_Website_With_Rust_Actix-web_And_MongoDB_2" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/11/17/rust-lang/Blog_Website_With_Rust_Actix-web_And_MongoDB_2/">使用Rust、Actix-web和MongoDB构建简单博客网站-02</a>
+    </h1>
+  
+
+        
+        <a href="/2019/11/17/rust-lang/Blog_Website_With_Rust_Actix-web_And_MongoDB_2/" class="archive-article-date">
+  	<time datetime="2019-11-16T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-11-17</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>上次留了一些问题，现在我们来解决一下。</p>
+<ul>
+<li>对请求时的反序列化异常进行处理</li>
+<li>带条件参数的查询接口</li>
+</ul>
+<p>本文完整源码见GITHUB Repo: <a href="https://github.com/nintha/demo-myblog" target="_blank" rel="noopener">https://github.com/nintha/demo-myblog</a><br>
+        
+          <a class="article-more-a" href="/2019/11/17/rust-lang/Blog_Website_With_Rust_Actix-web_And_MongoDB_2/#more">more >></a>
+        
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">rust</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">actix-web</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">mongodb</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/rust//" class="article-tag-list-link color5">rust</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-rust-lang/Blog_Website_With_Rust_Actix-web_And_MongoDB_1" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -811,68 +907,6 @@
 		</ul>
 	</div>
 
-
-      
-
-      
-      <div class="clearfix"></div>
-    </div>
-  </div>
-</article>
-
-<aside class="wrap-side-operation">
-    <div class="mod-side-operation">
-        
-        <div class="jump-container" id="js-jump-container" style="display:none;">
-            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
-                <i class="icon-font icon-back"></i>
-            </a>
-            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
-                <i class="icon-font icon-plane jump-plane"></i>
-            </div>
-        </div>
-        
-        
-    </div>
-</aside>
-
-
-
-
-  
-    <article id="post-MongoDB/MongoDB_aggregation_query_in_time_duration" class="article article-type-post  article-index" itemscope itemprop="blogPost">
-  <div class="article-inner">
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2018/05/15/MongoDB/MongoDB_aggregation_query_in_time_duration/">MongoDB基于时间段的聚合查询</a>
-    </h1>
-  
-
-        
-        <a href="/2018/05/15/MongoDB/MongoDB_aggregation_query_in_time_duration/" class="archive-article-date">
-  	<time datetime="2018-05-14T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2018-05-15</time>
-</a>
-        
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>最近写了一个爬虫对B站的视频统计数据进行追踪，每2分钟爬取一次存在mongo里，然后用这些数据画折线图。这个时候问题来了，如果我爬取了一年的数据，进行数据展示的时候，不应该把一年的数据都从数据库里读取出来，对于年这样大粒度统计，应该以每天抽取一条记录就OK了；当想看一天内的数据变化，又要以分钟为粒度进行记录抽取。</p>
-<p>基本的mongo查询语法已经难以解决均匀抽样查询记录了，这时就需要聚合查询这样的工具。</p>
-        
-          <a class="article-more-a" href="/2018/05/15/MongoDB/MongoDB_aggregation_query_in_time_duration/#more">more >></a>
-        
-      
-
-      
-    </div>
-    <div class="article-info article-info-index">
-      
-      
-      
 
       
 

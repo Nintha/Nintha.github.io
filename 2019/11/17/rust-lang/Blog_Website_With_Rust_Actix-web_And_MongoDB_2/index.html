@@ -6,18 +6,20 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
   <link rel="dns-prefetch" href="nintha.github.io">
-  <title>Tag: rust | Broken Pipe | ninthakeey&#39;s blog</title>
+  <title>使用Rust、Actix-web和MongoDB构建简单博客网站-02 | Broken Pipe | ninthakeey&#39;s blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="ninthakeey&apos;s blog">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Broken Pipe | ninthakeey&#39;s blog">
-<meta property="og:url" content="nintha.github.io/tags/rust/index.html">
+  <meta name="description" content="前言上次留了一些问题，现在我们来解决一下。  对请求时的反序列化异常进行处理 带条件参数的查询接口  本文完整源码见GITHUB Repo: https://github.com/nintha/demo-myblog">
+<meta name="keywords" content="rust,actix-web,mongodb">
+<meta property="og:type" content="article">
+<meta property="og:title" content="使用Rust、Actix-web和MongoDB构建简单博客网站-02">
+<meta property="og:url" content="nintha.github.io/2019/11/17/rust-lang/Blog_Website_With_Rust_Actix-web_And_MongoDB_2/index.html">
 <meta property="og:site_name" content="Broken Pipe | ninthakeey&#39;s blog">
-<meta property="og:description" content="ninthakeey&apos;s blog">
+<meta property="og:description" content="前言上次留了一些问题，现在我们来解决一下。  对请求时的反序列化异常进行处理 带条件参数的查询接口  本文完整源码见GITHUB Repo: https://github.com/nintha/demo-myblog">
 <meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2019-11-17T11:07:47.835Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Broken Pipe | ninthakeey&#39;s blog">
-<meta name="twitter:description" content="ninthakeey&apos;s blog">
+<meta name="twitter:title" content="使用Rust、Actix-web和MongoDB构建简单博客网站-02">
+<meta name="twitter:description" content="前言上次留了一些问题，现在我们来解决一下。  对请求时的反序列化异常进行处理 带条件参数的查询接口  本文完整源码见GITHUB Repo: https://github.com/nintha/demo-myblog">
   
   
     <link rel="icon" href="/favicon.png">
@@ -133,36 +135,74 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
+            <article id="post-rust-lang/Blog_Website_With_Rust_Actix-web_And_MongoDB_2" class="article article-type-post " itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
   
+    <h1 class="article-title" itemprop="name">
+      使用Rust、Actix-web和MongoDB构建简单博客网站-02
+    </h1>
   
-    
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2019" class="archive-year">2019</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/11/17/rust-lang/Blog_Website_With_Rust_Actix-web_And_MongoDB_2/" class="archive-article-date">
+
+        
+        <a href="/2019/11/17/rust-lang/Blog_Website_With_Rust_Actix-web_And_MongoDB_2/" class="archive-article-date">
   	<time datetime="2019-11-16T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-11-17</time>
 </a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/11/17/rust-lang/Blog_Website_With_Rust_Actix-web_And_MongoDB_2/">使用Rust、Actix-web和MongoDB构建简单博客网站-02</a>
-    </h1>
-  
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>上次留了一些问题，现在我们来解决一下。</p>
+<ul>
+<li>对请求时的反序列化异常进行处理</li>
+<li>带条件参数的查询接口</li>
+</ul>
+<p>本文完整源码见GITHUB Repo: <a href="https://github.com/nintha/demo-myblog" target="_blank" rel="noopener">https://github.com/nintha/demo-myblog</a><br><a id="more"></a></p>
+<h2 id="对请求时的反序列化异常进行处理"><a href="#对请求时的反序列化异常进行处理" class="headerlink" title="对请求时的反序列化异常进行处理"></a>对请求时的反序列化异常进行处理</h2><p>问题复现：</p>
+<p>我们构造一个这样的请求，body里面的JSON字符串比正常少了一个<code>content</code>字段</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">POST /articles</span><br><span class="line">body &#123;</span><br><span class="line">	&quot;title&quot;: &quot;简易博客指南&quot;,</span><br><span class="line">	&quot;author&quot;: &quot;栗子球&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>响应内容:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Json deserialize error: trailing comma at line 5 column 1</span><br></pre></td></tr></table></figure></p>
+<p>这是普通文本，我们需要把这个错误信息捕获并转换为统一的错误格式</p>
+<p>在 <code>main</code>函数里面修改</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// main.rs</span></span><br><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">main</span></span>() &#123;</span><br><span class="line">    init_logger();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">let</span> binding_address = <span class="string">"0.0.0.0:8000"</span>;</span><br><span class="line">    <span class="keyword">let</span> server = HttpServer::new(|| App::new()</span><br><span class="line">        <span class="comment">// change json extractor configuration</span></span><br><span class="line">        .data(</span><br><span class="line">              web::Json::&lt;Article&gt;::configure(|cfg| &#123;</span><br><span class="line">                  cfg.error_handler(|err, _req| &#123;</span><br><span class="line">                      <span class="comment">// &lt;- create custom error response</span></span><br><span class="line">                      log::error!(<span class="string">"json extractor error, path=&#123;&#125;, &#123;&#125;"</span>, _req.uri(), err);</span><br><span class="line">                      <span class="keyword">let</span> resp = Resp::err(<span class="number">10002</span>, <span class="string">"argument error"</span>);</span><br><span class="line">                      error::InternalError::from_response(</span><br><span class="line">                          err,</span><br><span class="line">                          HttpResponse::BadRequest().json(resp),</span><br><span class="line">                      ).into()</span><br><span class="line">                  &#125;)</span><br><span class="line">              &#125;)</span><br><span class="line">        )</span><br><span class="line">        .service(</span><br><span class="line">            web::scope(<span class="string">"/articles"</span>)</span><br><span class="line">                .route(<span class="string">""</span>, web::get().to(article::list_article))</span><br><span class="line">                .route(<span class="string">""</span>, web::post().to(article::save_article))</span><br><span class="line">                .route(<span class="string">"&#123;id&#125;"</span>, web::put().to(article::update_article))</span><br><span class="line">                .route(<span class="string">"&#123;id&#125;"</span>, web::delete().to(article::remove_article))</span><br><span class="line">        ))</span><br><span class="line">        .bind(binding_address)</span><br><span class="line">        .expect(<span class="string">"Can not bind to port 8000"</span>);</span><br><span class="line"></span><br><span class="line">    server.run().unwrap();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这里调用了<code>.data(..)</code>方法，对JSON反序列化的异常进行自定义处理，对于原始错误信息使用日志进行打印，对于前端返回内容，则是用我们自定义错误信息</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="attr">"code"</span>: <span class="number">10002</span>,</span><br><span class="line">    <span class="attr">"message"</span>: <span class="string">"argument error"</span>,</span><br><span class="line">    <span class="attr">"data"</span>: <span class="literal">null</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="带条件参数的查询接口"><a href="#带条件参数的查询接口" class="headerlink" title="带条件参数的查询接口"></a>带条件参数的查询接口</h2><p>首先我们声明一个新的结构体，用来承载查询条件参数</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// article/mod.rs</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#[derive(Deserialize, Serialize, Debug)]</span></span><br><span class="line"><span class="keyword">pub</span> <span class="class"><span class="keyword">struct</span> <span class="title">ArticleQuery</span></span> &#123;</span><br><span class="line">    <span class="meta">#[serde(deserialize_with = <span class="meta-string">"deserialize_object_id"</span>, default)]</span></span><br><span class="line">    _id: <span class="built_in">Option</span>&lt;ObjectId&gt;,</span><br><span class="line">    <span class="meta">#[serde(default)]</span></span><br><span class="line">    keyword: <span class="built_in">String</span>,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><code>_id</code>用于精确匹配，<code>keyword</code>用于模糊匹配<code>title/author/content</code>字段内容。</p>
+<p>由于这些参数是可选的，所以<code>_id</code>用<code>Option</code>包一层，<code>keyword</code> 是字符串，可以直接用默认值进行处理。<code>Option</code>的默认值是<code>None</code>，<code>String</code> 的默认值是空字符串。</p>
+<p><code>ObjectId</code>默认的反序列化肯定是不好用的，我们希望用户传递一个字符串就可以了，所以需要对<code>_id</code>字段指定自定义反序列化函数。反序列化函数如下所示：</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// article/mod.rs</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">deserialize_object_id</span></span>&lt;<span class="symbol">'de</span>, D&gt;(deserializer: D) -&gt; <span class="built_in">Result</span>&lt;<span class="built_in">Option</span>&lt;ObjectId&gt;, D::Error&gt;</span><br><span class="line">    <span class="keyword">where</span> D: Deserializer&lt;<span class="symbol">'de</span>&gt; &#123;</span><br><span class="line">        </span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">JsonOptionObjectIdVisitor</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">impl</span>&lt;<span class="symbol">'de</span>&gt; de::Visitor&lt;<span class="symbol">'de</span>&gt; <span class="keyword">for</span> JsonOptionObjectIdVisitor &#123;</span><br><span class="line">        <span class="class"><span class="keyword">type</span> <span class="title">Value</span></span> = <span class="built_in">Option</span>&lt;ObjectId&gt;;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">fn</span> <span class="title">expecting</span></span>(&amp;<span class="keyword">self</span>, formatter: &amp;<span class="keyword">mut</span> fmt::Formatter) -&gt; fmt::<span class="built_in">Result</span> &#123;</span><br><span class="line">            formatter.write_str(<span class="string">"an object id hash value"</span>)</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">fn</span> <span class="title">visit_str</span></span>&lt;E&gt;(<span class="keyword">self</span>, v: &amp;<span class="built_in">str</span>) -&gt; <span class="built_in">Result</span>&lt;Self::Value, E&gt; <span class="keyword">where</span> E: de::Error &#123;</span><br><span class="line">            <span class="keyword">if</span> v.is_empty() &#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">Ok</span>(<span class="literal">None</span>);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="literal">Ok</span>(ObjectId::with_string(v).ok())</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    deserializer.deserialize_any(JsonOptionObjectIdVisitor)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>然后就可以使用这个定义好的结构体了，把之前的查询接口函数</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">list_article</span></span>() -&gt; SimpleResp &#123;</span><br><span class="line">    ..</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>改成</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">pub</span> <span class="function"><span class="keyword">fn</span> <span class="title">list_article</span></span>(query: web::Json&lt;ArticleQuery&gt;) -&gt; SimpleResp &#123;</span><br><span class="line">    <span class="keyword">let</span> query = query.into_inner();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 构造查询参数</span></span><br><span class="line">    <span class="keyword">let</span> <span class="keyword">mut</span> d: Document = doc! &#123;&#125;;</span><br><span class="line">    <span class="keyword">if</span> query._id.is_some() &#123;</span><br><span class="line">        d.insert(<span class="string">"_id"</span>, query._id.unwrap());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> !query.keyword.is_empty() &#123;</span><br><span class="line">        d.insert(<span class="string">"$or"</span>, bson::Bson::Array(<span class="built_in">vec!</span>[</span><br><span class="line">            doc! &#123;<span class="string">"title"</span>: &#123;<span class="string">"$regex"</span>: &amp;query.keyword, <span class="string">"$options"</span>: <span class="string">"i"</span>&#125;&#125;.into(),</span><br><span class="line">            doc! &#123;<span class="string">"author"</span>: &#123;<span class="string">"$regex"</span>: &amp;query.keyword, <span class="string">"$options"</span>: <span class="string">"i"</span>&#125;&#125;.into(),</span><br><span class="line">            doc! &#123;<span class="string">"content"</span>: &#123;<span class="string">"$regex"</span>: &amp;query.keyword, <span class="string">"$options"</span>: <span class="string">"i"</span>&#125;&#125;.into(),</span><br><span class="line">        ]));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">let</span> coll = collection(<span class="string">"article"</span>);</span><br><span class="line">    <span class="keyword">let</span> cursor = coll.find(<span class="literal">Some</span>(d), <span class="literal">None</span>);</span><br><span class="line">    <span class="keyword">let</span> result = cursor.map(|<span class="keyword">mut</span> x| x.as_vec::&lt;Article&gt;());</span><br><span class="line">    <span class="keyword">match</span> result &#123;</span><br><span class="line">        <span class="literal">Ok</span>(list) =&gt; Resp::ok(list).to_json_result(),</span><br><span class="line">        <span class="literal">Err</span>(e) =&gt; &#123;</span><br><span class="line">            error!(<span class="string">"list_article error, &#123;&#125;"</span>, e);</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">Err</span>(BusinessError::InternalError);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这里我们先判断下每个参数是否有传递上来，对于没有的参数进行忽略。模糊匹配这里使用了大小写不敏感正则匹配，为了覆盖多个字段，则是用了<code>mongodb</code> 提供的<code>$or</code>逻辑操作符。</p>
+<p>测试下效果，这里使用了带 body的GET请求，首先是空参数</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">GET /articles</span><br><span class="line">body &#123;&#125;</span><br></pre></td></tr></table></figure>
+<p>响应内容:</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="attr">"code"</span>: <span class="number">0</span>,</span><br><span class="line">    <span class="attr">"message"</span>: <span class="string">"ok"</span>,</span><br><span class="line">    <span class="attr">"data"</span>: [</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="attr">"_id"</span>: <span class="string">"5d8f70a10009c1f200be8cae"</span>,</span><br><span class="line">            <span class="attr">"title"</span>: <span class="string">"七天学会Rust"</span>,</span><br><span class="line">            <span class="attr">"author"</span>: <span class="string">"noone"</span>,</span><br><span class="line">            <span class="attr">"content"</span>: <span class="string">"如果七天学不会，那就再学七天"</span></span><br><span class="line">        &#125;,</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="attr">"_id"</span>: <span class="string">"5d8f76ed00e36d9600b7604d"</span>,</span><br><span class="line">            <span class="attr">"title"</span>: <span class="string">"简易博客指南"</span>,</span><br><span class="line">            <span class="attr">"author"</span>: <span class="string">"栗子球"</span>,</span><br><span class="line">            <span class="attr">"content"</span>: <span class="string">"本文介绍如何使用Actix-web和MongoDB构建简单博客网站..."</span></span><br><span class="line">        &#125;,</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="attr">"_id"</span>: <span class="string">"5dca98f100fe6fda00f51150"</span>,</span><br><span class="line">            <span class="attr">"title"</span>: <span class="string">"rust从入门到放弃"</span>,</span><br><span class="line">            <span class="attr">"author"</span>: <span class="string">"佚名"</span>,</span><br><span class="line">            <span class="attr">"content"</span>: <span class="string">"Hello World"</span></span><br><span class="line">        &#125;</span><br><span class="line">    ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>带上<code>_id</code>参数的请求</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">GET /articles</span><br><span class="line">body &#123;</span><br><span class="line">    &quot;_id&quot;: &quot;5d8f70a10009c1f200be8cae&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>响应内容:</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="attr">"code"</span>: <span class="number">0</span>,</span><br><span class="line">    <span class="attr">"message"</span>: <span class="string">"ok"</span>,</span><br><span class="line">    <span class="attr">"data"</span>: [</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="attr">"_id"</span>: <span class="string">"5d8f70a10009c1f200be8cae"</span>,</span><br><span class="line">            <span class="attr">"title"</span>: <span class="string">"七天学会Rust"</span>,</span><br><span class="line">            <span class="attr">"author"</span>: <span class="string">"noone"</span>,</span><br><span class="line">            <span class="attr">"content"</span>: <span class="string">"如果七天学不会，那就再学七天"</span></span><br><span class="line">        &#125;</span><br><span class="line">    ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>带上<code>keyword</code>参数的请求</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">GET /articles</span><br><span class="line">body &#123;</span><br><span class="line">    &quot;keyword&quot;: &quot;rust&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>响应内容:</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    <span class="attr">"code"</span>: <span class="number">0</span>,</span><br><span class="line">    <span class="attr">"message"</span>: <span class="string">"ok"</span>,</span><br><span class="line">    <span class="attr">"data"</span>: [</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="attr">"_id"</span>: <span class="string">"5d8f70a10009c1f200be8cae"</span>,</span><br><span class="line">            <span class="attr">"title"</span>: <span class="string">"七天学会Rust"</span>,</span><br><span class="line">            <span class="attr">"author"</span>: <span class="string">"noone"</span>,</span><br><span class="line">            <span class="attr">"content"</span>: <span class="string">"如果七天学不会，那就再学七天"</span></span><br><span class="line">        &#125;,</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="attr">"_id"</span>: <span class="string">"5dca98f100fe6fda00f51150"</span>,</span><br><span class="line">            <span class="attr">"title"</span>: <span class="string">"rust从入门到放弃"</span>,</span><br><span class="line">            <span class="attr">"author"</span>: <span class="string">"佚名"</span>,</span><br><span class="line">            <span class="attr">"content"</span>: <span class="string">"Hello World"</span></span><br><span class="line">        &#125;</span><br><span class="line">    ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="后记"><a href="#后记" class="headerlink" title="后记"></a>后记</h2><p>这次我们解决了上次遗留下来的一部分问题。很多时候解决一个问题会引发另一个问题，比如为了模糊查询，我们这里使用了正则匹配+<code>$or</code>来实现的，可能在数据量比较大的时候性能表现并不理想，到时候要考虑是否替换成全文检索进行实现。</p>
+<p>下一篇应该快了 （咕咕）。</p>
 
-        <div class="article-info info-on-right">
-          
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags icon"></i>
 		<ul class="article-tag-list">
@@ -182,7 +222,7 @@
 		</ul>
 	</div>
 
-          
+      
 	<div class="article-category tagcloud">
 		<i class="icon-book icon"></i>
 		<ul class="article-tag-list">
@@ -195,74 +235,53 @@
 	</div>
 
 
-        </div>
-        <div class="clearfix"></div>
-    </header>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
   </div>
 </article>
+
   
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/09/28/rust-lang/Blog_Website_With_Rust_Actix-web_And_MongoDB_1/" class="archive-article-date">
-  	<time datetime="2019-09-27T16:00:00.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-09-28</time>
-</a>
+<nav id="article-nav">
+  
+  
+    <a href="/2019/09/28/rust-lang/Blog_Website_With_Rust_Actix-web_And_MongoDB_1/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">使用Rust、Actix-web和MongoDB构建简单博客网站-01</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
         </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/09/28/rust-lang/Blog_Website_With_Rust_Actix-web_And_MongoDB_1/">使用Rust、Actix-web和MongoDB构建简单博客网站-01</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">rust</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">actix-web</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">mongodb</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-	<div class="article-category tagcloud">
-		<i class="icon-book icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="/categories/rust//" class="article-tag-list-link color5">rust</a>
-        		</li>
-      		
-		</ul>
-	</div>
+        
+        
+    </div>
+</aside>
 
 
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
+
   
   
-    </div></section>
   
 
-    
+  
+
+  
+
+  
 
 
           </div>
@@ -285,9 +304,9 @@
 	var yiliaConfig = {
 		mathjax: false,
 		isHome: false,
-		isPost: false,
+		isPost: true,
 		isArchive: false,
-		isTag: true,
+		isTag: false,
 		isCategory: false,
 		open_in_new: false,
 		toc_hide_index: true,
